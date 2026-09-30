@@ -9,10 +9,12 @@ Dự án này bao gồm Frontend (React + Vite) và Backend (Laravel API + MySQL
 Bạn chỉ cần thực hiện 1 lệnh duy nhất tại thư mục gốc của dự án (thư mục chứa file `docker-compose.yml`) để khởi động toàn bộ hệ thống:
 
 ```bash
-docker compose up -d
+docker compose up -d --build
 ```
 
-> **Lưu ý:** Lần đầu tiên chạy lệnh này sẽ mất chút thời gian để tải các Docker Images (PHP, Node, Nginx, MySQL) về máy. Ở các lần sau sẽ rất nhanh (chưa tới 5 giây).
+> **Lưu ý:**
+> - Lần đầu tiên chạy lệnh này sẽ mất chút thời gian để tải các Docker Images (PHP, Node, MySQL) về máy. Ở các lần sau sẽ rất nhanh.
+> - Hệ thống sẽ tự động cài đặt các thư viện (node_modules cho Frontend và vendor cho Backend) nên bạn không cần cài đặt thủ công.
 
 ### Kiểm tra kết quả
 Sau khi chạy thành công, bạn có thể truy cập dự án qua các địa chỉ:
@@ -55,4 +57,9 @@ docker compose exec backend php artisan migrate:fresh
 **4. Khởi động lại hệ thống (Restart):**
 ```bash
 docker compose restart
+```
+
+**5. Import dữ liệu mẫu (Khôi phục DB):**
+```bash
+docker exec -i qlkhachsan_db mysql -uroot -proot ql_khachsan < dump-ql_khachsan-202609252019.sql
 ```
