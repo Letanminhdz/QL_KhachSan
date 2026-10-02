@@ -242,9 +242,9 @@ class AdminDataController extends Controller
     // ================= TRẠNG THÁI PHÒNG (JSON) =================
     public function getRoomStatuses(Request $request) {
         $this->checkAdmin($request);
-        $path = 'room_statuses.json';
-        if (Storage::exists($path)) {
-            $content = Storage::get($path);
+        $path = database_path('json_data/room_statuses.json');
+        if (file_exists($path)) {
+            $content = file_get_contents($path);
             return response()->json(json_decode($content, true));
         }
         return response()->json([]);
@@ -256,16 +256,16 @@ class AdminDataController extends Controller
         if (!is_array($statuses)) {
             return response()->json(['message' => 'Dữ liệu không hợp lệ'], 400);
         }
-        Storage::put('room_statuses.json', json_encode($statuses, JSON_UNESCAPED_UNICODE | JSON_PRETTY_PRINT));
+        file_put_contents(database_path('json_data/room_statuses.json'), json_encode($statuses, JSON_UNESCAPED_UNICODE | JSON_PRETTY_PRINT));
         return response()->json(['message' => 'Lưu trạng thái thành công']);
     }
 
     // ================= TRẠNG THÁI ĐƠN ĐẶT PHÒNG (JSON) =================
     public function getBookingStatuses(Request $request) {
         $this->checkAdmin($request);
-        $path = 'booking_statuses.json';
-        if (Storage::exists($path)) {
-            $content = Storage::get($path);
+        $path = database_path('json_data/booking_statuses.json');
+        if (file_exists($path)) {
+            $content = file_get_contents($path);
             return response()->json(json_decode($content, true));
         }
         return response()->json([]);
@@ -277,7 +277,8 @@ class AdminDataController extends Controller
         if (!is_array($statuses)) {
             return response()->json(['message' => 'Dữ liệu không hợp lệ'], 400);
         }
-        $saved = Storage::put('booking_statuses.json', json_encode($statuses, JSON_UNESCAPED_UNICODE | JSON_PRETTY_PRINT));
+        $path = database_path('json_data/booking_statuses.json');
+        $saved = file_put_contents($path, json_encode($statuses, JSON_UNESCAPED_UNICODE | JSON_PRETTY_PRINT)) !== false;
         if (!$saved) {
             return response()->json(['message' => 'Lỗi cấp quyền (Permission Denied). Không thể ghi đè file JSON.'], 500);
         }
@@ -286,9 +287,9 @@ class AdminDataController extends Controller
 
     // ================= TRẠNG THÁI ĐƠN DỊCH VỤ (JSON) =================
     public function getServiceStatuses(Request $request) {
-        $path = 'service_statuses.json';
-        if (Storage::exists($path)) {
-            $content = Storage::get($path);
+        $path = database_path('json_data/service_statuses.json');
+        if (file_exists($path)) {
+            $content = file_get_contents($path);
             return response()->json(json_decode($content, true));
         }
         return response()->json([]);
@@ -300,7 +301,8 @@ class AdminDataController extends Controller
         if (!is_array($statuses)) {
             return response()->json(['message' => 'Dữ liệu không hợp lệ'], 400);
         }
-        $saved = Storage::put('service_statuses.json', json_encode($statuses, JSON_UNESCAPED_UNICODE | JSON_PRETTY_PRINT));
+        $path = database_path('json_data/service_statuses.json');
+        $saved = file_put_contents($path, json_encode($statuses, JSON_UNESCAPED_UNICODE | JSON_PRETTY_PRINT)) !== false;
         if (!$saved) {
             return response()->json(['message' => 'Lỗi cấp quyền (Permission Denied). Không thể ghi đè file JSON.'], 500);
         }
@@ -437,7 +439,7 @@ class AdminDataController extends Controller
         // Thêm từng record vào bảng su_dung_dich_vu
         $thoi_gian_su_dung = date('Y-m-d H:i:s');
         
-        $statusPath = storage_path('app/private/service_statuses.json');
+        $statusPath = database_path('json_data/service_statuses.json');
         $defaultStatus = 'Cho_Phuc_Vu';
         if (file_exists($statusPath)) {
             $statuses = json_decode(file_get_contents($statusPath), true);

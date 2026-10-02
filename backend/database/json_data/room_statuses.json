@@ -1,0 +1,34 @@
+[
+    {
+        "id": "Trong",
+        "label": "Trống",
+        "color": "#10b981",
+        "textColor": "#1e293b",
+        "is_checkin": false,
+        "is_checkout": true
+    },
+    {
+        "id": "Dang_Thue",
+        "label": "Đang thuê",
+        "color": "#ef4444",
+        "textColor": "#ffffff",
+        "is_checkin": true,
+        "is_checkout": false
+    },
+    {
+        "id": "Dang_Don",
+        "label": "Đang dọn",
+        "color": "#3b82f6",
+        "textColor": "#ffffff",
+        "is_checkin": false,
+        "is_checkout": false
+    },
+    {
+        "id": "Bao_Tri",
+        "label": "Bảo trì",
+        "color": "#94a3b8",
+        "textColor": "#1e293b",
+        "is_checkin": false,
+        "is_checkout": false
+    }
+]

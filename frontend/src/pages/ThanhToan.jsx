@@ -12,6 +12,7 @@ export default function ThanhToan() {
   
   const [booking, setBooking] = useState(null);
   const [loading, setLoading] = useState(true);
+  const [settings, setSettings] = useState(null);
   const [serviceStatuses, setServiceStatuses] = useState([]);
   const [showPaymentModal, setShowPaymentModal] = useState(false);
   const [paymentAmount, setPaymentAmount] = useState('');
@@ -20,10 +21,22 @@ export default function ThanhToan() {
     if (id) {
       fetchBookingDetail();
       fetchServiceStatuses();
+      fetchSettings();
     } else {
       setLoading(false);
     }
   }, [id]);
+
+  const fetchSettings = async () => {
+    try {
+      const res = await fetch("http://localhost:8000/api/settings");
+      if (res.ok) {
+        setSettings(await res.json());
+      }
+    } catch (e) {
+      console.error(e);
+    }
+  };
 
   const fetchServiceStatuses = async () => {
     try {
@@ -308,26 +321,35 @@ export default function ThanhToan() {
               )}
             </div>
 
-            <div className="bg-slate-50 p-6 rounded-xl border border-slate-200">
-              <div className="flex justify-between items-center mb-2">
-                <span className="text-slate-600">Tổng tiền phòng:</span>
-                <span className="font-bold text-slate-800">{formatCurrency(tongTienPhong)}</span>
-              </div>
-              <div className="flex justify-between items-center mb-2">
-                <span className="text-slate-600">Tổng dịch vụ:</span>
-                <span className="font-bold text-slate-800">{formatCurrency(tongTienDichVu)}</span>
-              </div>
-              <div className="flex justify-between items-center mb-4">
-                <span className="text-slate-600">Đã thanh toán trước:</span>
-                <span className="font-bold text-emerald-600">- {formatCurrency(daThanhToan)}</span>
-              </div>
-              <div className="border-t border-slate-300 pt-4 flex justify-between items-center">
-                <span className="text-lg font-bold text-slate-800">
-                  SỐ TIỀN CẦN THANH TOÁN:
-                </span>
-                <span className="text-2xl font-extrabold text-red-600">
-                  {formatCurrency(tienConLai)}
-                </span>
+                        {/* Phẩn tổng tiền và QR */}
+            <div className="flex flex-col md:flex-row gap-8 items-start">
+              {/* QR Code */}
+              {settings?.bank_name && settings?.bank_account && tienConLai > 0 && (
+                <div className="w-full md:w-1/3 bg-slate-50 border border-slate-200 rounded-2xl p-4 flex flex-col items-center">
+                  <h4 className="font-bold text-slate-700 mb-2">Quét mã thanh toán</h4>
+                  <img src={`https://img.vietqr.io/image/${settings.bank_name}-${settings.bank_account}-compact2.jpg?amount=${tienConLai}&addInfo=${encodeURIComponent('Thanh toan don ' + booking.id)}`} alt="QR Code" className="w-full max-w-[200px] h-auto object-contain rounded-xl bg-white p-2 border border-slate-200" />
+                  <p className="text-xs text-slate-500 mt-2 text-center">Sử dụng App Ngân hàng hoặc ví điện tử để quét mã.</p>
+                </div>
+              )}
+              
+              {/* Chi tiết tiền */}
+              <div className="w-full flex-1 bg-slate-50 p-6 rounded-xl border border-slate-200">
+                <div className="flex justify-between items-center py-2 text-slate-600 font-medium">
+                  <span>Tổng tiền phòng:</span>
+                  <span>{formatCurrency(tongTienPhong)}</span>
+                </div>
+                <div className="flex justify-between items-center py-2 text-slate-600 font-medium border-b border-slate-200 pb-4">
+                  <span>Tổng dịch vụ:</span>
+                  <span>{formatCurrency(tongTienDichVu)}</span>
+                </div>
+                <div className="flex justify-between items-center py-4 text-emerald-600 font-bold border-b border-slate-200">
+                  <span>Đã thanh toán trước:</span>
+                  <span>- {formatCurrency(daThanhToan)}</span>
+                </div>
+                <div className="flex justify-between items-center pt-4">
+                  <span className="text-lg font-bold text-slate-800 uppercase">Số Tiền Cần Thanh Toán:</span>
+                  <span className="text-2xl font-extrabold text-red-600">{formatCurrency(Math.max(0, tienConLai))}</span>
+                </div>
               </div>
             </div>
 

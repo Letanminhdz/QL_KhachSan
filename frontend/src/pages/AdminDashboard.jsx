@@ -9,6 +9,8 @@ export default function AdminDashboard() {
   const [error, setError] = useState("");
   const [statusModal, setStatusModal] = useState(null); // { room } for quick status change
   const [changingStatus, setChangingStatus] = useState(false);
+  const [pendingAllocations, setPendingAllocations] = useState([]);
+  const [loadingAllocations, setLoadingAllocations] = useState(false);
   const navigate = useNavigate();
 
   const fetchData = async () => {
@@ -43,6 +45,50 @@ export default function AdminDashboard() {
   useEffect(() => {
     fetchData();
   }, []);
+
+  const fetchPendingAllocations = async () => {
+    try {
+      setLoadingAllocations(true);
+      const token = localStorage.getItem("token");
+      const res = await fetch('http://localhost:8000/api/admin/pending-allocations', {
+        headers: { 'Authorization': `Bearer ${token}`, 'Accept': 'application/json' }
+      });
+      if (res.ok) {
+        setPendingAllocations(await res.json());
+      }
+    } catch (err) {
+      console.error(err);
+    } finally {
+      setLoadingAllocations(false);
+    }
+  };
+
+  const handleUpdateStatus = async (id, status) => {
+    if (!window.confirm(`Bạn có chắc muốn chuyển trạng thái đơn này thành ${status}?`)) return;
+    try {
+      const token = localStorage.getItem("token");
+      const res = await fetch(`http://localhost:8000/api/admin/dat-phong/${id}/status`, {
+        method: 'PUT',
+        headers: { 'Authorization': `Bearer ${token}`, 'Content-Type': 'application/json', 'Accept': 'application/json' },
+        body: JSON.stringify({ trang_thai: status })
+      });
+      if (res.ok) {
+        alert("Cập nhật thành công!");
+        fetchPendingAllocations();
+        fetchData();
+      } else {
+        alert("Lỗi khi cập nhật");
+      }
+    } catch (err) {
+      alert("Lỗi kết nối");
+    }
+  };
+
+  useEffect(() => {
+    if (showModal) {
+      fetchPendingAllocations();
+    }
+  }, [showModal]);
 
   const handleRoomClick = (room) => {
     if (room.trang_thai === 'Dang_Thue' && room.id_dat_phong) {
@@ -346,10 +392,39 @@ export default function AdminDashboard() {
                 </svg>
               </button>
             </div>
-            <div className="p-6 overflow-y-auto">
-              <div className="text-center text-slate-500 py-8">
-                Đang tải dữ liệu... (Chức năng này sẽ kết nối với API sau)
-              </div>
+            <div className="p-6 overflow-y-auto bg-slate-50">
+              {loadingAllocations ? (
+                <div className="text-center text-slate-500 py-8">Đang tải dữ liệu...</div>
+              ) : pendingAllocations.length === 0 ? (
+                <div className="text-center text-slate-500 py-8">Không có đơn đặt phòng nào đang chờ.</div>
+              ) : (
+                <div className="space-y-4">
+                  {pendingAllocations.map(order => (
+                    <div key={order.id} className="bg-white p-4 rounded-xl shadow-sm border border-slate-200 flex flex-col md:flex-row justify-between gap-4">
+                      <div>
+                        <h6 className="font-bold text-slate-800 text-lg flex items-center gap-2">
+                          {order.ten_khach_hang}
+                          <span className="text-sm font-normal text-slate-500 border bg-slate-100 px-2 py-0.5 rounded-md">ID: #{order.id}</span>
+                        </h6>
+                        <div className="text-sm text-slate-600 mt-2 space-y-1">
+                          <p><span className="font-medium">SĐT:</span> {order.sdt_khach_hang}</p>
+                          <p><span className="font-medium">Ngày đặt:</span> {new Date(order.ngay_dat).toLocaleString()}</p>
+                          <p><span className="font-medium">Trạng thái:</span> <span className="text-primary-600 font-bold">{order.trang_thai}</span></p>
+                          <p><span className="font-medium">Phòng đã xếp tạm:</span> <span className="bg-amber-100 text-amber-800 px-2 py-0.5 rounded font-bold">{order.phong_da_gan || 'Chưa gán phòng'}</span></p>
+                        </div>
+                      </div>
+                      <div className="flex flex-row md:flex-col gap-2 justify-center border-t md:border-t-0 md:border-l border-slate-100 pt-4 md:pt-0 md:pl-4">
+                        <button onClick={() => handleUpdateStatus(order.id, 'Da_Nhan_Phong')} className="flex-1 bg-primary-600 hover:bg-primary-700 text-white font-bold py-2 px-4 rounded-lg shadow-sm transition-colors text-sm text-center">
+                          Gán phòng (Check-in)
+                        </button>
+                        <button onClick={() => handleUpdateStatus(order.id, 'Da_Huy')} className="flex-1 bg-red-100 hover:bg-red-200 text-red-700 font-bold py-2 px-4 rounded-lg transition-colors text-sm text-center">
+                          Hủy phòng
+                        </button>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              )}
             </div>
             <div className="p-4 border-t bg-slate-50 text-right">
               <button

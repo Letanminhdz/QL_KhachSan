@@ -15,7 +15,7 @@ class DatPhongController extends Controller
 {
     // Lấy config trạng thái (public)
     public function getBookingStatuses() {
-        $path = storage_path('app/private/booking_statuses.json');
+        $path = database_path('json_data/booking_statuses.json');
         if (file_exists($path)) {
             $content = file_get_contents($path);
             return response()->json(json_decode($content, true));
@@ -73,7 +73,7 @@ class DatPhongController extends Controller
         $tongTien = $ketQuaTinh['tong_tien'] * $soLuongCanDat;
 
         $firstStatusId = 'Moi_Dat';
-        $path = storage_path('app/private/booking_statuses.json');
+        $path = database_path('json_data/booking_statuses.json');
         if (file_exists($path)) {
             $statuses = json_decode(file_get_contents($path), true);
             if (is_array($statuses) && count($statuses) > 0) {
@@ -142,7 +142,7 @@ class DatPhongController extends Controller
 
     public function getServiceStatuses()
     {
-        $path = storage_path('app/private/service_statuses.json');
+        $path = database_path('json_data/service_statuses.json');
         if (file_exists($path)) {
             return response()->json(json_decode(file_get_contents($path)));
         }
@@ -191,7 +191,7 @@ class DatPhongController extends Controller
         $thoi_gian_su_dung = date('Y-m-d H:i:s');
         
         $defaultStatus = 'Cho_Phuc_Vu';
-        $statusPath = storage_path('app/private/service_statuses.json');
+        $statusPath = database_path('json_data/service_statuses.json');
         if (file_exists($statusPath)) {
             $statuses = json_decode(file_get_contents($statusPath), true);
             if (!empty($statuses) && isset($statuses[0]['id'])) {
@@ -249,7 +249,7 @@ class DatPhongController extends Controller
         }
 
         $bookingStatuses = [];
-        $bookingStatusPath = storage_path('app/private/booking_statuses.json');
+        $bookingStatusPath = database_path('json_data/booking_statuses.json');
         if (file_exists($bookingStatusPath)) {
             $bookingStatuses = json_decode(file_get_contents($bookingStatusPath), true);
         }
@@ -296,7 +296,7 @@ class DatPhongController extends Controller
         // Tự động chuyển trạng thái phòng nếu có cấu hình set_room_status
         if ($currentStatusConfig && isset($currentStatusConfig['set_room_status'])) {
             $roomStatuses = [];
-            $path = storage_path('app/private/room_statuses.json');
+            $path = database_path('json_data/room_statuses.json');
             if (file_exists($path)) {
                 $roomStatuses = json_decode(file_get_contents($path), true);
             }
