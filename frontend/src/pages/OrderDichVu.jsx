@@ -22,11 +22,14 @@ export default function OrderDichVu() {
         
         // Fetch Menu Items
         const menuRes = await fetch("http://localhost:8000/api/admin/dich-vu", {
-          headers: { "Authorization": `Bearer ${token}` }
+          headers: { 
+            "Authorization": `Bearer ${token}`,
+            "Accept": "application/json"
+          }
         });
         if (menuRes.ok) {
           const data = await menuRes.json();
-          setMenuItems(data.filter(item => item.dang_hoat_dong === 1));
+          setMenuItems(Array.isArray(data) ? data.filter(item => item.dang_hoat_dong === 1) : []);
         } else if (menuRes.status === 401) {
           navigate("/login");
           return;
@@ -34,23 +37,31 @@ export default function OrderDichVu() {
 
         // Fetch Active Rooms
         const roomRes = await fetch("http://localhost:8000/api/admin/active-rooms", {
-          headers: { "Authorization": `Bearer ${token}` }
+          headers: { 
+            "Authorization": `Bearer ${token}`,
+            "Accept": "application/json"
+          }
         });
         if (roomRes.ok) {
           const rooms = await roomRes.json();
-          setActiveRooms(rooms);
+          setActiveRooms(Array.isArray(rooms) ? rooms : []);
         }
 
         // Fetch Categories
         const catRes = await fetch("http://localhost:8000/api/admin/loai-dich-vu", {
-          headers: { "Authorization": `Bearer ${token}` }
+          headers: { 
+            "Authorization": `Bearer ${token}`,
+            "Accept": "application/json"
+          }
         });
         if (catRes.ok) {
           const catData = await catRes.json();
-          setCategories([
-            { id: "Tất cả", label: "Tất cả" },
-            ...catData.map(c => ({ id: c.id, label: c.ten_loai }))
-          ]);
+          if (Array.isArray(catData)) {
+            setCategories([
+              { id: "Tất cả", label: "Tất cả" },
+              ...catData.map(c => ({ id: c.id, label: c.ten_loai }))
+            ]);
+          }
         }
 
       } catch (err) {
