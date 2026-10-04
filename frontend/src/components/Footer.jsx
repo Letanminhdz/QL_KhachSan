@@ -13,7 +13,7 @@ export default function Footer() {
 
   return (
     <footer className="bg-slate-900 text-white pt-10 pb-6 mt-auto text-[14px]">
-      <div className="container mx-auto px-4 max-w-7xl">
+      <div className="container mx-auto px-4">
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-12 gap-6 pb-6 border-b border-slate-700">
           {/* Column 1: Info & Social */}
           <div className="lg:col-span-4">
@@ -56,7 +56,7 @@ export default function Footer() {
           </div>
 
           {/* Column 2: Tiện ích */}
-          <div className="col-span-1 md:col-span-1 lg:col-span-3">
+          <div className="col-span-1 md:col-span-1 lg:col-span-2">
             <h6 className="font-bold text-white mb-3 text-[12px] uppercase tracking-wider">
               Tiện ích
             </h6>
@@ -128,44 +128,6 @@ export default function Footer() {
             </ul>
           </div>
 
-          {/* Column 3: Liên kết */}
-          <div className="col-span-1 md:col-span-1 lg:col-span-2">
-            <h6 className="font-bold text-white mb-3 text-[12px] uppercase tracking-wider">
-              Liên kết
-            </h6>
-            <ul className="text-slate-400 flex flex-col gap-2">
-              <li>
-                <Link to="/" className="hover:text-white transition-colors">
-                  Trang chủ
-                </Link>
-              </li>
-              <li>
-                <Link
-                  to="/tim-phong"
-                  className="hover:text-white transition-colors"
-                >
-                  Tìm phòng
-                </Link>
-              </li>
-              <li>
-                <Link
-                  to="/lich-su-dat-phong"
-                  className="hover:text-white transition-colors"
-                >
-                  Lịch sử
-                </Link>
-              </li>
-              <li>
-                <Link
-                  to="/dang-nhap"
-                  className="hover:text-white transition-colors"
-                >
-                  Đăng nhập
-                </Link>
-              </li>
-            </ul>
-          </div>
-
           {/* Column 4: Liên hệ */}
           <div className="lg:col-span-3">
             <h6 className="font-bold text-white mb-3 text-[12px] uppercase tracking-wider">
@@ -191,7 +153,25 @@ export default function Footer() {
                 </svg>
                 {settings?.email || 'Đang cập nhật...'}
               </span>
-            </div>
+            </div>          </div>
+          {/* Column 4: Bản đồ */}
+          <div className="lg:col-span-3 flex flex-col h-full">
+            <h6 className="font-bold text-white mb-3 text-[12px] uppercase tracking-wider shrink-0">
+              Vị trí
+            </h6>
+            {settings?.google_map ? (
+              <div className="rounded-xl overflow-hidden border border-white/10 flex-1 w-full min-h-[150px]">
+                <iframe 
+                  src={settings.google_map} 
+                  className="w-full h-full"
+                  style={{ border: 0 }} 
+                  allowFullScreen="" 
+                  loading="lazy" 
+                  referrerPolicy="no-referrer-when-downgrade"
+                  title="Google Map"
+                ></iframe>
+              </div>
+            ) : null}
           </div>
         </div>
         <div className="pt-4 text-slate-500 text-[12px] flex justify-between items-center">

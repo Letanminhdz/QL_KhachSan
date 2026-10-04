@@ -211,33 +211,33 @@ export default function AdminDashboard() {
 
   return (
     <>
-    <div className="p-4 md:p-8 flex-1 flex flex-col">
+    <div className="p-4 md:p-8 flex-1 flex flex-col overflow-y-auto">
       {/* Header & Actions */}
       <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 mb-8">
-        <div>
-          <h2 className="text-2xl font-extrabold text-slate-900 flex items-center gap-2">
+        <div className="flex-1 min-w-0 w-full md:w-auto">
+          <h2 className="text-lg md:text-2xl font-extrabold text-slate-900 flex items-center gap-2 max-w-full min-w-0 w-full">
             <svg
-              className="w-6 h-6 text-primary-600"
+              className="w-5 h-5 md:w-6 md:h-6 text-primary-600 shrink-0"
               fill="currentColor"
               viewBox="0 0 20 20"
             >
               <path d="M5 3a2 2 0 00-2 2v2a2 2 0 002 2h2a2 2 0 002-2V5a2 2 0 00-2-2H5zM5 11a2 2 0 00-2 2v2a2 2 0 002 2h2a2 2 0 002-2v-2a2 2 0 00-2-2H5zM11 5a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V5zM11 13a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z"></path>
             </svg>
-            SƠ ĐỒ PHÒNG & GIÁM SÁT VẬN HÀNH
+            <span className="truncate">SƠ ĐỒ PHÒNG & GIÁM SÁT VẬN HÀNH</span>
           </h2>
-          <p className="text-slate-500 text-sm mt-1">
+          <p className="hidden md:block text-slate-500 text-sm mt-1">
             Hệ thống quản lý trạng thái buồng phòng theo thời gian thực
           </p>
         </div>
-        <div className="flex gap-3">
+        <div className="flex w-full md:w-auto gap-2 md:gap-3 flex-row items-center overflow-x-auto scrollbar-hide py-1">
           <button
             onClick={() => setShowModal(true)}
-            className="relative bg-primary-500 hover:bg-primary-600 text-white font-bold py-2 px-4 rounded-lg shadow-sm flex items-center gap-2 transition-colors"
+            className="relative bg-primary-500 hover:bg-primary-600 text-white font-bold py-2 px-3 md:px-4 rounded-lg shadow-sm flex items-center gap-2 transition-colors h-[42px] shrink-0"
           >
             <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
               <path d="M10 2a6 6 0 00-6 6v3.586l-.707.707A1 1 0 004 14h12a1 1 0 00.707-1.707L16 11.586V8a6 6 0 00-6-6zM10 18a3 3 0 01-3-3h6a3 3 0 01-3 3z"></path>
             </svg>
-            Đơn Chờ Phân Bổ
+            <span className="hidden md:inline">Đơn Chờ Phân Bổ</span>
             {data?.kpis?.pending > 0 && (
               <span className="absolute -top-2 -right-2 bg-red-500 text-white text-xs font-bold px-2 py-0.5 rounded-full border-2 border-white">
                 {data.kpis.pending}
@@ -246,14 +246,14 @@ export default function AdminDashboard() {
           </button>
           <button
             onClick={fetchData}
-            className="bg-slate-200 hover:bg-slate-300 text-slate-700 font-bold py-2 px-4 rounded-lg shadow-sm flex items-center gap-2 transition-colors"
+            className="bg-slate-200 hover:bg-slate-300 text-slate-700 font-bold py-2 px-3 md:px-4 rounded-lg shadow-sm flex items-center gap-2 transition-colors h-[42px] shrink-0"
           >
             <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"></path></svg>
-            Làm Mới
+            <span className="hidden md:inline">Làm Mới</span>
           </button>
           <Link
             to="/admin/order-dich-vu"
-            className="bg-slate-900 hover:bg-slate-800 text-white font-bold py-2 px-4 rounded-lg shadow-sm flex items-center gap-2 transition-colors"
+            className="bg-slate-900 hover:bg-slate-800 text-white font-bold py-2 px-3 md:px-4 rounded-lg shadow-sm flex items-center gap-2 transition-colors h-[42px] shrink-0"
           >
             <svg
               className="w-5 h-5"
@@ -268,7 +268,7 @@ export default function AdminDashboard() {
                 d="M13 10V3L4 14h7v7l9-11h-7z"
               ></path>
             </svg>
-            Gọi Dịch Vụ
+            <span className="hidden md:inline">Gọi Dịch Vụ</span>
           </Link>
         </div>
       </div>

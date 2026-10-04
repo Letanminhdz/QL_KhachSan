@@ -921,19 +921,19 @@ export default function Admin() {
   return (
     <div className="p-4 md:p-8 flex-1 flex flex-col h-full overflow-hidden">
       <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 mb-6">
-        <div>
-          <h1 className="text-2xl font-extrabold text-slate-900">Quản Lý Dữ Liệu Hệ Thống</h1>
-          <p className="text-slate-500 text-sm mt-1">
+        <div className="flex-1 min-w-0 w-full md:w-auto">
+          <h1 className="text-lg md:text-2xl font-extrabold text-slate-900 max-w-full min-w-0 w-full"><span className="truncate block">Quản Lý Dữ Liệu Hệ Thống</span></h1>
+          <p className="hidden md:block text-slate-500 text-sm mt-1">
             Quản lý các danh mục cốt lõi của khách sạn
           </p>
         </div>
-        <div className="flex flex-col md:flex-row gap-3 w-full md:w-auto items-center">
-          <div className="w-full md:w-72">
+        <div className="flex w-full md:w-auto gap-2 md:gap-3 flex-row items-center">
+          <div className="flex-1 md:w-72 min-w-0">
              <SearchBar value={searchTerm} onChange={setSearchTerm} placeholder={`Tìm kiếm ${tabs.find(t => t.id === activeTab)?.label.toLowerCase()}...`} />
           </div>
-          <button onClick={() => handleOpenModal()} className="bg-emerald-500 hover:bg-emerald-600 text-white font-bold py-2 px-4 rounded-lg shadow-sm transition-colors flex items-center gap-2 w-full md:w-auto justify-center h-[42px]">
+          <button onClick={() => handleOpenModal()} className="bg-emerald-500 hover:bg-emerald-600 text-white font-bold py-2 px-3 md:px-4 rounded-lg shadow-sm transition-colors flex items-center justify-center gap-2 w-auto h-[42px] shrink-0">
             <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"></path></svg>
-            Thêm mới
+            <span className="hidden md:inline">Thêm mới</span>
           </button>
         </div>
       </div>

@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import { Link, useSearchParams, useNavigate } from "react-router-dom";
 import { useUI } from "../contexts/UIContext";
 import { tinhTienPhong } from "../utils/tinhTienPhong";
+import { docSoTien } from "../utils/docSoTien";
 
 export default function ThanhToan() {
   const [searchParams] = useSearchParams();
@@ -189,7 +190,7 @@ export default function ThanhToan() {
 
   return (
     <>
-      <div className="p-4 md:p-8 flex-1 flex flex-col">
+      <div className="p-4 md:p-8 flex-1 flex flex-col overflow-y-auto h-full">
         <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 mb-6">
         <div>
           <h2 className="text-2xl font-extrabold text-slate-900 flex items-center gap-2">
@@ -213,7 +214,7 @@ export default function ThanhToan() {
       </div>
 
       <div className="bg-white rounded-2xl shadow-sm border border-slate-200 overflow-hidden flex-1 flex flex-col relative z-10">
-          <div className="p-8">
+          <div className="p-8 flex-1 overflow-y-auto">
             <div className="border-b border-slate-200 pb-6 mb-6 flex flex-col md:flex-row justify-between items-start gap-4">
               <div>
                 <h4 className="text-lg font-bold text-slate-800">
@@ -269,9 +270,12 @@ export default function ThanhToan() {
                       )}
                     </td>
                     <td className="py-3 px-4 text-center">{booking.so_luong_phong}</td>
-                    <td className="py-3 px-4 text-center">{kqTinhTien.loaiHinh === 'Theo giờ' ? kqTinhTien.soGioLe + ' giờ' : kqTinhTien.soNgay + ' đêm'}</td>
+                    <td className="py-3 px-4 text-center">
+                      <div>{kqTinhTien.loaiHinh === "Theo giờ" ? kqTinhTien.soGioLe + " giờ" : kqTinhTien.soNgay + " đêm"}</div>
+                      <div className="text-xs text-slate-400 mt-0.5">({Math.floor((actualCheckoutDate - new Date(booking.ngay_nhan_phong)) / 3600000)} giờ {Math.round(((actualCheckoutDate - new Date(booking.ngay_nhan_phong)) % 3600000) / 60000)} phút)</div>
+                    </td>
                     <td className="py-3 px-4 text-right">{formatCurrency(booking.gia_phong_khi_dat)}</td>
-                    <td className="py-3 px-4 text-right font-bold">{formatCurrency(tongTienPhong)}</td>
+                    <td className="py-3 px-4 text-right font-bold">{formatCurrency((kqTinhTien.tongTien - kqTinhTien.phuThu) * booking.so_luong_phong)}</td>
                   </tr>
                   {kqTinhTien.phuThu > 0 && (
                     <tr>
@@ -348,7 +352,10 @@ export default function ThanhToan() {
                 </div>
                 <div className="flex justify-between items-center pt-4">
                   <span className="text-lg font-bold text-slate-800 uppercase">Số Tiền Cần Thanh Toán:</span>
-                  <span className="text-2xl font-extrabold text-red-600">{formatCurrency(Math.max(0, tienConLai))}</span>
+                  <div className="text-right">
+                    <span className="text-2xl font-extrabold text-red-600 block">{formatCurrency(Math.max(0, tienConLai))}</span>
+                    <span className="text-sm font-medium text-slate-500 italic block mt-1">({docSoTien(Math.max(0, tienConLai))})</span>
+                  </div>
                 </div>
               </div>
             </div>

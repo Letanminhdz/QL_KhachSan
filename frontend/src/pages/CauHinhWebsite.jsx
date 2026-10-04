@@ -41,19 +41,21 @@ export default function CauHinhWebsite() {
   };
 
   return (
-    <div className="p-4 md:p-8 space-y-8">
+    <div className="p-4 md:p-8 space-y-8 overflow-y-auto h-full">
       {/* Cấu Hình Chung */}
       <div>
         <div className="mb-6">
-          <h1 className="text-2xl font-extrabold text-slate-900 flex items-center gap-2">
-            <svg className="w-6 h-6 text-primary-600" fill="currentColor" viewBox="0 0 20 20">
+          <div className="flex-1 min-w-0 w-full md:w-auto">
+          <h1 className="text-lg md:text-2xl font-extrabold text-slate-900 flex items-center gap-2 max-w-full min-w-0 w-full">
+            <svg className="w-5 h-5 md:w-6 md:h-6 text-primary-600 shrink-0" fill="currentColor" viewBox="0 0 20 20">
               <path fillRule="evenodd" d="M11.49 3.17c-.38-1.56-2.6-1.56-2.98 0a1.532 1.532 0 01-2.286.948c-1.372-.836-2.942.734-2.106 2.106.54.886.061 2.042-.947 2.287-1.561.379-1.561 2.6 0 2.978a1.532 1.532 0 01.947 2.287c-.836 1.372.734 2.942 2.106 2.106a1.532 1.532 0 012.287.947c.379 1.561 2.6 1.561 2.978 0a1.533 1.533 0 012.287-.947c1.372.836 2.942-.734 2.106-2.106a1.533 1.533 0 01.947-2.287c1.561-.379 1.561-2.6 0-2.978a1.532 1.532 0 01-.947-2.287c.836-1.372-.734-2.942-2.106-2.106a1.532 1.532 0 01-2.287-.947zM10 13a3 3 0 100-6 3 3 0 000 6z" clipRule="evenodd"></path>
             </svg>
-            Cấu Hình Website
+            <span className="truncate">Cấu Hình Website</span>
           </h1>
-          <p className="text-slate-500 text-sm mt-1">
+          <p className="hidden md:block text-slate-500 text-sm mt-1">
             Cập nhật thông tin hiển thị trên website như địa chỉ, liên hệ, mạng xã hội
           </p>
+          </div>
         </div>
 
                 <div className="bg-white rounded-2xl shadow-sm border border-slate-200 overflow-hidden p-6 max-w-4xl">

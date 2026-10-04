@@ -66,8 +66,9 @@ export default function Home() {
 
   return (
     <main className="flex-grow flex flex-col">
+      <div className="flex flex-col min-h-[calc(100vh-64px)]">
       {/* Hero Panoramic */}
-      <div className="relative min-h-[520px] flex items-center overflow-hidden text-white rounded-3xl m-4 z-0">
+      <div className="relative flex-1 min-h-[520px] flex items-center overflow-hidden text-white rounded-3xl mx-4 mt-4 mb-6 z-0">
         {/* Lớp ảnh nền */}
         <div className="absolute -top-[5%] -bottom-[5%] -left-[8%] -right-[8%] bg-[url('https://images.unsplash.com/photo-1542314831-068cd1dbfeeb?auto=format&fit=crop&w=1920&q=90')] bg-center bg-cover scale-105 z-0"></div>
         {/* Hiệu ứng tối 2 bên (vignette) */}
@@ -395,6 +396,8 @@ export default function Home() {
             </div>
           </div>
         </div>
+      </div>
+
       </div>
 
       {/* Room Types Showcase */}

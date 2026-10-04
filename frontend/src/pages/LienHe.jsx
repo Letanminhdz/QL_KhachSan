@@ -118,22 +118,6 @@ export default function LienHe() {
                 </button>
               </form>
             </div>
-
-            {/* Google Map */}
-            {settings?.google_map && (
-              <div className="rounded-3xl overflow-hidden shadow-lg border border-slate-100 h-80">
-                <iframe 
-                  src={settings.google_map} 
-                  width="100%" 
-                  height="100%" 
-                  style={{ border: 0 }} 
-                  allowFullScreen="" 
-                  loading="lazy" 
-                  referrerPolicy="no-referrer-when-downgrade"
-                  title="Google Map"
-                ></iframe>
-              </div>
-            )}
           </div>
 
         </div>

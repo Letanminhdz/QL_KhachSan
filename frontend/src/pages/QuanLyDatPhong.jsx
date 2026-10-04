@@ -173,30 +173,30 @@ export default function QuanLyDatPhong() {
   return (
     <div className="p-4 md:p-8 flex-1 flex flex-col">
       <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 mb-6">
-        <div>
-          <h1 className="text-2xl font-extrabold text-slate-900 flex items-center gap-2">
-            <svg className="w-6 h-6 text-primary-600" fill="currentColor" viewBox="0 0 20 20">
+        <div className="flex-1 min-w-0 w-full md:w-auto">
+          <h1 className="text-lg md:text-2xl font-extrabold text-slate-900 flex items-center gap-2 max-w-full min-w-0 w-full">
+            <svg className="w-5 h-5 md:w-6 md:h-6 text-primary-600 shrink-0" fill="currentColor" viewBox="0 0 20 20">
               <path d="M9 2a1 1 0 000 2h2a1 1 0 100-2H9z" />
               <path fillRule="evenodd" d="M4 5a2 2 0 012-2 3 3 0 003 3h2a3 3 0 003-3 2 2 0 012 2v11a2 2 0 01-2 2H6a2 2 0 01-2-2V5zm3 4a1 1 0 000 2h.01a1 1 0 100-2H7zm3 0a1 1 0 100 2h3a1 1 0 100-2h-3zm-3 4a1 1 0 100 2h.01a1 1 0 100-2H7zm3 0a1 1 0 100 2h3a1 1 0 100-2h-3z" clipRule="evenodd" />
             </svg>
-            Đơn Đặt Phòng
+            <span className="truncate">Đơn Đặt Phòng</span>
           </h1>
-          <p className="text-slate-500 text-sm mt-1">
+          <p className="hidden md:block text-slate-500 text-sm mt-1">
             Quản lý các yêu cầu đặt phòng và tình trạng xử lý
           </p>
         </div>
-        <div className="flex flex-col md:flex-row gap-3 w-full md:w-auto items-center">
-          <div className="w-full md:w-72">
+        <div className="flex w-full md:w-auto gap-2 md:gap-3 flex-row items-center">
+          <div className="flex-1 md:w-72 min-w-0">
              <SearchBar value={searchTerm} onChange={setSearchTerm} placeholder="Tìm đơn, SĐT, mã phòng..." />
           </div>
           <button 
             onClick={fetchDatPhongs} 
-            className="text-primary-700 hover:text-primary-800 font-bold flex items-center justify-center gap-2 bg-primary-50 border border-primary-200 hover:bg-primary-100 px-4 py-2 rounded-lg transition-colors w-full md:w-auto h-[42px] whitespace-nowrap"
+            className="text-primary-700 hover:text-primary-800 font-bold flex items-center justify-center gap-2 bg-primary-50 border border-primary-200 hover:bg-primary-100 px-3 md:px-4 py-2 rounded-lg transition-colors w-auto h-[42px] whitespace-nowrap shrink-0"
           >
             <svg className={`w-5 h-5 ${loading ? 'animate-spin' : ''}`} fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"></path></svg>
-            Làm mới
+            <span className="hidden md:inline">Làm mới</span>
           </button>
-          <button onClick={() => setShowSettingsModal(true)} className="text-slate-500 hover:text-slate-800 hover:bg-slate-100 font-bold flex items-center justify-center gap-2 bg-white border border-slate-200 px-4 py-2 rounded-lg transition-colors w-full md:w-auto h-[42px]" title="Cài đặt Luồng Trạng Thái">
+          <button onClick={() => setShowSettingsModal(true)} className="text-slate-500 hover:text-slate-800 hover:bg-slate-100 font-bold flex items-center justify-center gap-2 bg-white border border-slate-200 px-0 md:px-4 w-[42px] md:w-auto h-[42px] rounded-lg transition-colors shrink-0" title="Cài đặt Luồng Trạng Thái">
             <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"></path><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path></svg>
           </button>
         </div>
