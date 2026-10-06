@@ -107,7 +107,7 @@ export default function AdminDashboard() {
       // Fetch room data first to get required fields
       const resRoom = await fetch(`http://localhost:8000/api/admin/phong`, { headers: { 'Authorization': `Bearer ${token}` } });
       const rooms = await resRoom.json();
-      const fullRoom = rooms.data?.find(r => r.id === room.id) || room;
+      const fullRoom = (Array.isArray(rooms) ? rooms : (rooms.data || [])).find(r => r.id === room.id) || room;
       
       const res = await fetch(`http://localhost:8000/api/admin/phong/${room.id}`, {
         method: 'PUT',
@@ -133,66 +133,33 @@ export default function AdminDashboard() {
     }
   };
   const getRoomStyle = (status) => {
-    // Find custom label from API data
     const customStatus = roomStatuses.find(s => s.id === status);
-    const customLabel = customStatus ? customStatus.label : "KHÔNG RÕ";
     const defaultLabel = customStatus ? customStatus.label.toUpperCase() : "KHÔNG RÕ";
 
-    switch (status) {
-      case 'Trong':
-        return {
-          bg: "bg-emerald-50 border-emerald-200",
-          text: "text-emerald-700",
-          badgeBg: "bg-emerald-100",
-          badgeText: "text-emerald-600",
-          label: customStatus ? customStatus.label.toUpperCase() : "TRỐNG",
-          kpiBorder: "border-emerald-500",
-          kpiText: "text-emerald-500"
-        };
-      case 'Dang_Thue':
-        return {
-          bg: "bg-red-50 border-red-200",
-          text: "text-red-700",
-          badgeBg: "bg-red-100",
-          badgeText: "text-red-600",
-          label: customStatus ? customStatus.label.toUpperCase() : "ĐANG THUÊ",
-          kpiBorder: "border-red-500",
-          kpiText: "text-red-500"
-        };
-      case 'Dang_Don':
-        return {
-          bg: "bg-primary-50 border-primary-200",
-          text: "text-primary-700",
-          badgeBg: "bg-primary-100",
-          badgeText: "text-primary-600",
-          label: customStatus ? customStatus.label.toUpperCase() : "ĐANG DỌN",
-          kpiBorder: "border-primary-500",
-          kpiText: "text-primary-500"
-        };
-      case 'Bao_Tri':
-        return {
-          bg: "bg-slate-100 border-slate-300",
-          text: "text-slate-700",
-          badgeBg: "bg-slate-200",
-          badgeText: "text-slate-600",
-          label: customStatus ? customStatus.label.toUpperCase() : "BẢO TRÌ",
-          kpiBorder: "border-slate-400",
-          kpiText: "text-slate-500"
-        };
-      default:
-        return {
-          bg: customStatus?.color ? "" : "bg-amber-50 border-amber-200",
-          text: customStatus?.color ? "" : "text-amber-700",
-          badgeBg: customStatus?.color ? "" : "bg-amber-100",
-          badgeText: customStatus?.color ? "" : "text-amber-600",
-          label: defaultLabel,
-          color: customStatus?.color,
-          kpiBorder: customStatus?.color ? "" : "border-amber-500",
-          kpiText: customStatus?.color ? "" : "text-amber-500"
-        };
+    if (customStatus?.color) {
+      return {
+        bg: "",
+        text: "",
+        badgeBg: "",
+        badgeText: "",
+        label: defaultLabel,
+        color: customStatus.color,
+        textColor: customStatus.textColor || '#ffffff',
+        kpiBorder: "",
+        kpiText: ""
+      };
     }
-  };
 
+    return {
+      bg: "bg-slate-100 border-slate-300",
+      text: "text-slate-700",
+      badgeBg: "bg-slate-200",
+      badgeText: "text-slate-600",
+      label: defaultLabel,
+      kpiBorder: "border-slate-400",
+      kpiText: "text-slate-500"
+    };
+  };
   if (loading) {
     return (
       <div className="p-8 flex items-center justify-center h-full">

@@ -198,10 +198,10 @@ export default function ChiTietDatPhong() {
                 <div className="flex justify-between items-center border-t border-slate-200 pt-4 mt-2">
                   <span className="font-bold text-slate-700 text-lg">Trạng thái thanh toán:</span>
                   <span className={`font-bold px-4 py-2 rounded-xl text-sm ${booking.trang_thai_thanh_toan === 'Đã thanh toán'
-                      ? 'bg-emerald-100 text-emerald-700'
-                      : parseFloat(booking.so_tien_da_thanh_toan || 0) > 0
-                        ? 'bg-amber-100 text-amber-700'
-                        : 'bg-red-100 text-red-700'
+                    ? 'bg-emerald-100 text-emerald-700'
+                    : parseFloat(booking.so_tien_da_thanh_toan || 0) > 0
+                      ? 'bg-amber-100 text-amber-700'
+                      : 'bg-red-100 text-red-700'
                     }`}>
                     {booking.trang_thai_thanh_toan === 'Đã thanh toán' ? 'Đã thu tiền' : parseFloat(booking.so_tien_da_thanh_toan || 0) > 0 ? `Đã cọc ${formatCurrency(booking.so_tien_da_thanh_toan)}` : 'Chưa thu'}
                   </span>
