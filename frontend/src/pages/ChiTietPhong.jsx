@@ -36,7 +36,7 @@ export default function ChiTietPhong() {
 
   if (!phong) return null;
 
-  const hinhAnh = phong.hinh_anh ? (phong.hinh_anh.startsWith('http') ? phong.hinh_anh : `http://localhost:8000/${phong.hinh_anh}`) : "https://images.unsplash.com/photo-1611892440504-42a792e24d32?auto=format&fit=crop&w=1200&q=80";
+  const hinhAnh = phong.hinh_anh ? (phong.hinh_anh.startsWith('http') ? phong.hinh_anh : `http://localhost:8000/${phong.hinh_anh}`) : 'http://localhost:8000/storage/defaults/room_1200.jpg';
   const moTa = phong.mo_ta || "Chưa có mô tả cho loại phòng này.";
   const tienIch = phong.tien_ich || ["Wifi miễn phí", "Điều hòa", "Tivi", "Phòng tắm riêng"];
 

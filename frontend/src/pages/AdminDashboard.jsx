@@ -9,6 +9,8 @@ export default function AdminDashboard() {
   const [error, setError] = useState("");
   const [statusModal, setStatusModal] = useState(null); // { room } for quick status change
   const [changingStatus, setChangingStatus] = useState(false);
+  const [pendingAllocations, setPendingAllocations] = useState([]);
+  const [loadingAllocations, setLoadingAllocations] = useState(false);
   const navigate = useNavigate();
 
   const fetchData = async () => {
@@ -44,6 +46,50 @@ export default function AdminDashboard() {
     fetchData();
   }, []);
 
+  const fetchPendingAllocations = async () => {
+    try {
+      setLoadingAllocations(true);
+      const token = localStorage.getItem("token");
+      const res = await fetch('http://localhost:8000/api/admin/pending-allocations', {
+        headers: { 'Authorization': `Bearer ${token}`, 'Accept': 'application/json' }
+      });
+      if (res.ok) {
+        setPendingAllocations(await res.json());
+      }
+    } catch (err) {
+      console.error(err);
+    } finally {
+      setLoadingAllocations(false);
+    }
+  };
+
+  const handleUpdateStatus = async (id, status) => {
+    if (!window.confirm(`Bạn có chắc muốn chuyển trạng thái đơn này thành ${status}?`)) return;
+    try {
+      const token = localStorage.getItem("token");
+      const res = await fetch(`http://localhost:8000/api/admin/dat-phong/${id}/status`, {
+        method: 'PUT',
+        headers: { 'Authorization': `Bearer ${token}`, 'Content-Type': 'application/json', 'Accept': 'application/json' },
+        body: JSON.stringify({ trang_thai: status })
+      });
+      if (res.ok) {
+        alert("Cập nhật thành công!");
+        fetchPendingAllocations();
+        fetchData();
+      } else {
+        alert("Lỗi khi cập nhật");
+      }
+    } catch (err) {
+      alert("Lỗi kết nối");
+    }
+  };
+
+  useEffect(() => {
+    if (showModal) {
+      fetchPendingAllocations();
+    }
+  }, [showModal]);
+
   const handleRoomClick = (room) => {
     if (room.trang_thai === 'Dang_Thue' && room.id_dat_phong) {
       navigate(`/admin/chi-tiet-dat-phong?id=${room.id_dat_phong}`);
@@ -61,7 +107,7 @@ export default function AdminDashboard() {
       // Fetch room data first to get required fields
       const resRoom = await fetch(`http://localhost:8000/api/admin/phong`, { headers: { 'Authorization': `Bearer ${token}` } });
       const rooms = await resRoom.json();
-      const fullRoom = rooms.data?.find(r => r.id === room.id) || room;
+      const fullRoom = (Array.isArray(rooms) ? rooms : (rooms.data || [])).find(r => r.id === room.id) || room;
       
       const res = await fetch(`http://localhost:8000/api/admin/phong/${room.id}`, {
         method: 'PUT',
@@ -87,66 +133,33 @@ export default function AdminDashboard() {
     }
   };
   const getRoomStyle = (status) => {
-    // Find custom label from API data
     const customStatus = roomStatuses.find(s => s.id === status);
-    const customLabel = customStatus ? customStatus.label : "KHÔNG RÕ";
     const defaultLabel = customStatus ? customStatus.label.toUpperCase() : "KHÔNG RÕ";
 
-    switch (status) {
-      case 'Trong':
-        return {
-          bg: "bg-emerald-50 border-emerald-200",
-          text: "text-emerald-700",
-          badgeBg: "bg-emerald-100",
-          badgeText: "text-emerald-600",
-          label: customStatus ? customStatus.label.toUpperCase() : "TRỐNG",
-          kpiBorder: "border-emerald-500",
-          kpiText: "text-emerald-500"
-        };
-      case 'Dang_Thue':
-        return {
-          bg: "bg-red-50 border-red-200",
-          text: "text-red-700",
-          badgeBg: "bg-red-100",
-          badgeText: "text-red-600",
-          label: customStatus ? customStatus.label.toUpperCase() : "ĐANG THUÊ",
-          kpiBorder: "border-red-500",
-          kpiText: "text-red-500"
-        };
-      case 'Dang_Don':
-        return {
-          bg: "bg-primary-50 border-primary-200",
-          text: "text-primary-700",
-          badgeBg: "bg-primary-100",
-          badgeText: "text-primary-600",
-          label: customStatus ? customStatus.label.toUpperCase() : "ĐANG DỌN",
-          kpiBorder: "border-primary-500",
-          kpiText: "text-primary-500"
-        };
-      case 'Bao_Tri':
-        return {
-          bg: "bg-slate-100 border-slate-300",
-          text: "text-slate-700",
-          badgeBg: "bg-slate-200",
-          badgeText: "text-slate-600",
-          label: customStatus ? customStatus.label.toUpperCase() : "BẢO TRÌ",
-          kpiBorder: "border-slate-400",
-          kpiText: "text-slate-500"
-        };
-      default:
-        return {
-          bg: customStatus?.color ? "" : "bg-amber-50 border-amber-200",
-          text: customStatus?.color ? "" : "text-amber-700",
-          badgeBg: customStatus?.color ? "" : "bg-amber-100",
-          badgeText: customStatus?.color ? "" : "text-amber-600",
-          label: defaultLabel,
-          color: customStatus?.color,
-          kpiBorder: customStatus?.color ? "" : "border-amber-500",
-          kpiText: customStatus?.color ? "" : "text-amber-500"
-        };
+    if (customStatus?.color) {
+      return {
+        bg: "",
+        text: "",
+        badgeBg: "",
+        badgeText: "",
+        label: defaultLabel,
+        color: customStatus.color,
+        textColor: customStatus.textColor || '#ffffff',
+        kpiBorder: "",
+        kpiText: ""
+      };
     }
-  };
 
+    return {
+      bg: "bg-slate-100 border-slate-300",
+      text: "text-slate-700",
+      badgeBg: "bg-slate-200",
+      badgeText: "text-slate-600",
+      label: defaultLabel,
+      kpiBorder: "border-slate-400",
+      kpiText: "text-slate-500"
+    };
+  };
   if (loading) {
     return (
       <div className="p-8 flex items-center justify-center h-full">
@@ -165,33 +178,33 @@ export default function AdminDashboard() {
 
   return (
     <>
-    <div className="p-4 md:p-8 flex-1 flex flex-col">
+    <div className="p-4 md:p-8 flex-1 flex flex-col overflow-y-auto">
       {/* Header & Actions */}
       <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 mb-8">
-        <div>
-          <h2 className="text-2xl font-extrabold text-slate-900 flex items-center gap-2">
+        <div className="flex-1 min-w-0 w-full md:w-auto">
+          <h2 className="text-lg md:text-2xl font-extrabold text-slate-900 flex items-center gap-2 max-w-full min-w-0 w-full">
             <svg
-              className="w-6 h-6 text-primary-600"
+              className="w-5 h-5 md:w-6 md:h-6 text-primary-600 shrink-0"
               fill="currentColor"
               viewBox="0 0 20 20"
             >
               <path d="M5 3a2 2 0 00-2 2v2a2 2 0 002 2h2a2 2 0 002-2V5a2 2 0 00-2-2H5zM5 11a2 2 0 00-2 2v2a2 2 0 002 2h2a2 2 0 002-2v-2a2 2 0 00-2-2H5zM11 5a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V5zM11 13a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z"></path>
             </svg>
-            SƠ ĐỒ PHÒNG & GIÁM SÁT VẬN HÀNH
+            <span className="truncate">SƠ ĐỒ PHÒNG & GIÁM SÁT VẬN HÀNH</span>
           </h2>
-          <p className="text-slate-500 text-sm mt-1">
+          <p className="hidden md:block text-slate-500 text-sm mt-1">
             Hệ thống quản lý trạng thái buồng phòng theo thời gian thực
           </p>
         </div>
-        <div className="flex gap-3">
+        <div className="flex w-full md:w-auto gap-2 md:gap-3 flex-row items-center overflow-x-auto scrollbar-hide py-1">
           <button
             onClick={() => setShowModal(true)}
-            className="relative bg-primary-500 hover:bg-primary-600 text-white font-bold py-2 px-4 rounded-lg shadow-sm flex items-center gap-2 transition-colors"
+            className="relative bg-primary-500 hover:bg-primary-600 text-white font-bold py-2 px-3 md:px-4 rounded-lg shadow-sm flex items-center gap-2 transition-colors h-[42px] shrink-0"
           >
             <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
               <path d="M10 2a6 6 0 00-6 6v3.586l-.707.707A1 1 0 004 14h12a1 1 0 00.707-1.707L16 11.586V8a6 6 0 00-6-6zM10 18a3 3 0 01-3-3h6a3 3 0 01-3 3z"></path>
             </svg>
-            Đơn Chờ Phân Bổ
+            <span className="hidden md:inline">Đơn Chờ Phân Bổ</span>
             {data?.kpis?.pending > 0 && (
               <span className="absolute -top-2 -right-2 bg-red-500 text-white text-xs font-bold px-2 py-0.5 rounded-full border-2 border-white">
                 {data.kpis.pending}
@@ -200,14 +213,14 @@ export default function AdminDashboard() {
           </button>
           <button
             onClick={fetchData}
-            className="bg-slate-200 hover:bg-slate-300 text-slate-700 font-bold py-2 px-4 rounded-lg shadow-sm flex items-center gap-2 transition-colors"
+            className="bg-slate-200 hover:bg-slate-300 text-slate-700 font-bold py-2 px-3 md:px-4 rounded-lg shadow-sm flex items-center gap-2 transition-colors h-[42px] shrink-0"
           >
             <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"></path></svg>
-            Làm Mới
+            <span className="hidden md:inline">Làm Mới</span>
           </button>
           <Link
             to="/admin/order-dich-vu"
-            className="bg-slate-900 hover:bg-slate-800 text-white font-bold py-2 px-4 rounded-lg shadow-sm flex items-center gap-2 transition-colors"
+            className="bg-slate-900 hover:bg-slate-800 text-white font-bold py-2 px-3 md:px-4 rounded-lg shadow-sm flex items-center gap-2 transition-colors h-[42px] shrink-0"
           >
             <svg
               className="w-5 h-5"
@@ -222,7 +235,7 @@ export default function AdminDashboard() {
                 d="M13 10V3L4 14h7v7l9-11h-7z"
               ></path>
             </svg>
-            Gọi Dịch Vụ
+            <span className="hidden md:inline">Gọi Dịch Vụ</span>
           </Link>
         </div>
       </div>
@@ -346,10 +359,39 @@ export default function AdminDashboard() {
                 </svg>
               </button>
             </div>
-            <div className="p-6 overflow-y-auto">
-              <div className="text-center text-slate-500 py-8">
-                Đang tải dữ liệu... (Chức năng này sẽ kết nối với API sau)
-              </div>
+            <div className="p-6 overflow-y-auto bg-slate-50">
+              {loadingAllocations ? (
+                <div className="text-center text-slate-500 py-8">Đang tải dữ liệu...</div>
+              ) : pendingAllocations.length === 0 ? (
+                <div className="text-center text-slate-500 py-8">Không có đơn đặt phòng nào đang chờ.</div>
+              ) : (
+                <div className="space-y-4">
+                  {pendingAllocations.map(order => (
+                    <div key={order.id} className="bg-white p-4 rounded-xl shadow-sm border border-slate-200 flex flex-col md:flex-row justify-between gap-4">
+                      <div>
+                        <h6 className="font-bold text-slate-800 text-lg flex items-center gap-2">
+                          {order.ten_khach_hang}
+                          <span className="text-sm font-normal text-slate-500 border bg-slate-100 px-2 py-0.5 rounded-md">ID: #{order.id}</span>
+                        </h6>
+                        <div className="text-sm text-slate-600 mt-2 space-y-1">
+                          <p><span className="font-medium">SĐT:</span> {order.sdt_khach_hang}</p>
+                          <p><span className="font-medium">Ngày đặt:</span> {new Date(order.ngay_dat).toLocaleString()}</p>
+                          <p><span className="font-medium">Trạng thái:</span> <span className="text-primary-600 font-bold">{order.trang_thai}</span></p>
+                          <p><span className="font-medium">Phòng đã xếp tạm:</span> <span className="bg-amber-100 text-amber-800 px-2 py-0.5 rounded font-bold">{order.phong_da_gan || 'Chưa gán phòng'}</span></p>
+                        </div>
+                      </div>
+                      <div className="flex flex-row md:flex-col gap-2 justify-center border-t md:border-t-0 md:border-l border-slate-100 pt-4 md:pt-0 md:pl-4">
+                        <button onClick={() => handleUpdateStatus(order.id, 'Da_Nhan_Phong')} className="flex-1 bg-primary-600 hover:bg-primary-700 text-white font-bold py-2 px-4 rounded-lg shadow-sm transition-colors text-sm text-center">
+                          Gán phòng (Check-in)
+                        </button>
+                        <button onClick={() => handleUpdateStatus(order.id, 'Da_Huy')} className="flex-1 bg-red-100 hover:bg-red-200 text-red-700 font-bold py-2 px-4 rounded-lg transition-colors text-sm text-center">
+                          Hủy phòng
+                        </button>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              )}
             </div>
             <div className="p-4 border-t bg-slate-50 text-right">
               <button

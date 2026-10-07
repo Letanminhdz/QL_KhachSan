@@ -8,6 +8,7 @@
  * @returns {object}
  */
 export const tinhTienPhong = (ngayNhan, ngayTra, giaCoBan) => {
+    giaCoBan = Number(giaCoBan) || 0;
     const nhan = new Date(ngayNhan);
     const tra = new Date(ngayTra);
 

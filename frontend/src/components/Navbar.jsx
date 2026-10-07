@@ -14,7 +14,7 @@ export default function Navbar() {
   return (
     <>
       <nav className="sticky top-0 w-full z-50 bg-white/95 backdrop-blur-md border-b border-gray-200 shadow-sm">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="container mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between h-16 items-center">
           <div className="flex-shrink-0 flex items-center">
             <Link
@@ -41,7 +41,7 @@ export default function Navbar() {
           </div>
 
           {/* Center Menu (Desktop) */}
-          <div className="hidden md:flex space-x-8">
+          <div className="hidden lg:flex space-x-8">
             <Link
               to="/"
               className={`px-3 py-2 rounded-md transition-colors font-bold ${isActive("/") ? "text-primary-600" : "text-slate-600 hover:text-primary-500"}`}
@@ -75,7 +75,7 @@ export default function Navbar() {
           </div>
 
           {/* Right Menu (Desktop) */}
-          <div className="hidden md:flex items-center space-x-3">
+          <div className="hidden lg:flex items-center space-x-3">
             {user?.vai_tro === 'Admin' && (
               <Link
                 to="/admin/so-do-phong"
@@ -116,7 +116,7 @@ export default function Navbar() {
           </div>
 
           {/* Mobile menu button */}
-          <div className="md:hidden flex items-center">
+          <div className="lg:hidden flex items-center">
             <button
               onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
               className="text-slate-500 hover:text-slate-900 focus:outline-none p-2"
@@ -152,12 +152,12 @@ export default function Navbar() {
       {/* Mobile Menu Overlay & Panel */}
       {isMobileMenuOpen && (
         <div 
-          className="fixed inset-0 bg-black/50 z-50 md:hidden transition-opacity" 
+          className="fixed inset-0 bg-black/50 z-50 lg:hidden transition-opacity" 
           onClick={() => setIsMobileMenuOpen(false)}
         />
       )}
       <div 
-        className={`fixed top-0 right-0 bottom-0 w-[280px] bg-white z-[60] shadow-2xl transform transition-transform duration-300 ease-in-out md:hidden flex flex-col ${
+        className={`fixed top-0 right-0 bottom-0 w-[280px] bg-white z-[60] shadow-2xl transform transition-transform duration-300 ease-in-out lg:hidden flex flex-col ${
           isMobileMenuOpen ? "translate-x-0" : "translate-x-full"
         }`}
       >

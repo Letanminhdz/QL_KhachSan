@@ -44,6 +44,29 @@ class AdminController extends Controller
         ]);
     }
 
+    public function pendingAllocations(Request $request)
+    {
+        if ($request->user()->vai_tro !== 'Admin') {
+            return response()->json(['message' => 'Không có quyền truy cập'], 403);
+        }
+
+        $pending = DatPhong::whereIn('trang_thai', ['Moi_Dat', 'Da_Xac_Nhan'])
+            ->orderBy('id', 'desc')
+            ->get();
+            
+        // Gắn thêm thông tin phòng đã phân bổ tạm
+        foreach ($pending as $order) {
+            $phongIds = \Illuminate\Support\Facades\DB::table('phan_bo_phong')
+                ->where('id_dat_phong', $order->id)
+                ->join('phong', 'phan_bo_phong.id_phong', '=', 'phong.id')
+                ->pluck('phong.so_phong')
+                ->toArray();
+            $order->phong_da_gan = implode(', ', $phongIds);
+        }
+
+        return response()->json($pending);
+    }
+
     public function roomDiagram(Request $request)
     {
         if ($request->user()->vai_tro !== 'Admin') {

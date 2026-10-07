@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import { Link, useSearchParams, useNavigate } from "react-router-dom";
 import { useUI } from "../contexts/UIContext";
 import { tinhTienPhong } from "../utils/tinhTienPhong";
+import { docSoTien } from "../utils/docSoTien";
 
 export default function ThanhToan() {
   const [searchParams] = useSearchParams();
@@ -12,6 +13,7 @@ export default function ThanhToan() {
   
   const [booking, setBooking] = useState(null);
   const [loading, setLoading] = useState(true);
+  const [settings, setSettings] = useState(null);
   const [serviceStatuses, setServiceStatuses] = useState([]);
   const [showPaymentModal, setShowPaymentModal] = useState(false);
   const [paymentAmount, setPaymentAmount] = useState('');
@@ -20,10 +22,22 @@ export default function ThanhToan() {
     if (id) {
       fetchBookingDetail();
       fetchServiceStatuses();
+      fetchSettings();
     } else {
       setLoading(false);
     }
   }, [id]);
+
+  const fetchSettings = async () => {
+    try {
+      const res = await fetch("http://localhost:8000/api/settings");
+      if (res.ok) {
+        setSettings(await res.json());
+      }
+    } catch (e) {
+      console.error(e);
+    }
+  };
 
   const fetchServiceStatuses = async () => {
     try {
@@ -176,7 +190,7 @@ export default function ThanhToan() {
 
   return (
     <>
-      <div className="p-4 md:p-8 flex-1 flex flex-col">
+      <div className="p-4 md:p-8 flex-1 flex flex-col overflow-y-auto h-full">
         <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 mb-6">
         <div>
           <h2 className="text-2xl font-extrabold text-slate-900 flex items-center gap-2">
@@ -200,7 +214,7 @@ export default function ThanhToan() {
       </div>
 
       <div className="bg-white rounded-2xl shadow-sm border border-slate-200 overflow-hidden flex-1 flex flex-col relative z-10">
-          <div className="p-8">
+          <div className="p-8 flex-1 overflow-y-auto">
             <div className="border-b border-slate-200 pb-6 mb-6 flex flex-col md:flex-row justify-between items-start gap-4">
               <div>
                 <h4 className="text-lg font-bold text-slate-800">
@@ -256,9 +270,12 @@ export default function ThanhToan() {
                       )}
                     </td>
                     <td className="py-3 px-4 text-center">{booking.so_luong_phong}</td>
-                    <td className="py-3 px-4 text-center">{kqTinhTien.loaiHinh === 'Theo giờ' ? kqTinhTien.soGioLe + ' giờ' : kqTinhTien.soNgay + ' đêm'}</td>
+                    <td className="py-3 px-4 text-center">
+                      <div>{kqTinhTien.loaiHinh === "Theo giờ" ? kqTinhTien.soGioLe + " giờ" : kqTinhTien.soNgay + " đêm"}</div>
+                      <div className="text-xs text-slate-400 mt-0.5">({Math.floor((actualCheckoutDate - new Date(booking.ngay_nhan_phong)) / 3600000)} giờ {Math.round(((actualCheckoutDate - new Date(booking.ngay_nhan_phong)) % 3600000) / 60000)} phút)</div>
+                    </td>
                     <td className="py-3 px-4 text-right">{formatCurrency(booking.gia_phong_khi_dat)}</td>
-                    <td className="py-3 px-4 text-right font-bold">{formatCurrency(tongTienPhong)}</td>
+                    <td className="py-3 px-4 text-right font-bold">{formatCurrency((kqTinhTien.tongTien - kqTinhTien.phuThu) * booking.so_luong_phong)}</td>
                   </tr>
                   {kqTinhTien.phuThu > 0 && (
                     <tr>
@@ -308,26 +325,38 @@ export default function ThanhToan() {
               )}
             </div>
 
-            <div className="bg-slate-50 p-6 rounded-xl border border-slate-200">
-              <div className="flex justify-between items-center mb-2">
-                <span className="text-slate-600">Tổng tiền phòng:</span>
-                <span className="font-bold text-slate-800">{formatCurrency(tongTienPhong)}</span>
-              </div>
-              <div className="flex justify-between items-center mb-2">
-                <span className="text-slate-600">Tổng dịch vụ:</span>
-                <span className="font-bold text-slate-800">{formatCurrency(tongTienDichVu)}</span>
-              </div>
-              <div className="flex justify-between items-center mb-4">
-                <span className="text-slate-600">Đã thanh toán trước:</span>
-                <span className="font-bold text-emerald-600">- {formatCurrency(daThanhToan)}</span>
-              </div>
-              <div className="border-t border-slate-300 pt-4 flex justify-between items-center">
-                <span className="text-lg font-bold text-slate-800">
-                  SỐ TIỀN CẦN THANH TOÁN:
-                </span>
-                <span className="text-2xl font-extrabold text-red-600">
-                  {formatCurrency(tienConLai)}
-                </span>
+                        {/* Phẩn tổng tiền và QR */}
+            <div className="flex flex-col md:flex-row gap-8 items-start">
+              {/* QR Code */}
+              {settings?.bank_name && settings?.bank_account && tienConLai > 0 && (
+                <div className="w-full md:w-1/3 bg-slate-50 border border-slate-200 rounded-2xl p-4 flex flex-col items-center">
+                  <h4 className="font-bold text-slate-700 mb-2">Quét mã thanh toán</h4>
+                  <img src={`https://img.vietqr.io/image/${settings.bank_name}-${settings.bank_account}-compact2.jpg?amount=${tienConLai}&addInfo=${encodeURIComponent('Thanh toan don ' + booking.id)}`} alt="QR Code" className="w-full max-w-[200px] h-auto object-contain rounded-xl bg-white p-2 border border-slate-200" />
+                  <p className="text-xs text-slate-500 mt-2 text-center">Sử dụng App Ngân hàng hoặc ví điện tử để quét mã.</p>
+                </div>
+              )}
+              
+              {/* Chi tiết tiền */}
+              <div className="w-full flex-1 bg-slate-50 p-6 rounded-xl border border-slate-200">
+                <div className="flex justify-between items-center py-2 text-slate-600 font-medium">
+                  <span>Tổng tiền phòng:</span>
+                  <span>{formatCurrency(tongTienPhong)}</span>
+                </div>
+                <div className="flex justify-between items-center py-2 text-slate-600 font-medium border-b border-slate-200 pb-4">
+                  <span>Tổng dịch vụ:</span>
+                  <span>{formatCurrency(tongTienDichVu)}</span>
+                </div>
+                <div className="flex justify-between items-center py-4 text-emerald-600 font-bold border-b border-slate-200">
+                  <span>Đã thanh toán trước:</span>
+                  <span>- {formatCurrency(daThanhToan)}</span>
+                </div>
+                <div className="flex justify-between items-center pt-4">
+                  <span className="text-lg font-bold text-slate-800 uppercase">Số Tiền Cần Thanh Toán:</span>
+                  <div className="text-right">
+                    <span className="text-2xl font-extrabold text-red-600 block">{formatCurrency(Math.max(0, tienConLai))}</span>
+                    <span className="text-sm font-medium text-slate-500 italic block mt-1">({docSoTien(Math.max(0, tienConLai))})</span>
+                  </div>
+                </div>
               </div>
             </div>
 

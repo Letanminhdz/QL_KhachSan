@@ -63,3 +63,26 @@ docker compose restart
 ```bash
 docker exec -i qlkhachsan_db mysql -uroot -proot ql_khachsan < dump-ql_khachsan-202609252019.sql
 ```
+
+
+---
+
+## 📂 Cấu Trúc Dự Án
+
+```text
+QL_KhachSan/
+├── backend/            # Source code Laravel (PHP API)
+│   ├── app/            # Chứa các Controller, Models
+│   ├── database/       # Migrations và các file cấu hình CSDL
+│   ├── routes/         # Khai báo các API Endpoints (routes/api.php)
+│   └── ...
+├── frontend/           # Source code ReactJS + Vite (Giao diện)
+│   ├── src/
+│   │   ├── components/ # Các component giao diện dùng chung
+│   │   ├── pages/      # Các trang hiển thị (Home, Tìm Phòng, Admin...)
+│   │   └── ...
+├── docker-compose.yml  # File cấu hình triển khai Docker (chạy tất cả các dịch vụ)
+├── dump-ql_khachsan-202609252019.sql # File backup cơ sở dữ liệu MySQL (Data mẫu)
+├── BaoCaoMonHoc_v1.xlsx # File theo dõi tiến độ công việc/đồ án
+└── README.md           # Hướng dẫn sử dụng hệ thống
+```

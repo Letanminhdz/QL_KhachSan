@@ -1,0 +1,33 @@
+[
+    {
+        "id": "Cho_Phuc_Vu",
+        "label": "Chờ phục vụ",
+        "color": "#f59e0b",
+        "textColor": "#ffffff",
+        "description": "Dịch vụ đã được gọi và đang chờ phục vụ",
+        "charge_fee": false
+    },
+    {
+        "id": "Dang_Phuc_Vu",
+        "label": "Đang phục vụ",
+        "color": "#81df9d",
+        "textColor": "#000000",
+        "charge_fee": false
+    },
+    {
+        "id": "Da_Phuc_Vu",
+        "label": "Đã phục vụ",
+        "color": "#10b981",
+        "textColor": "#ffffff",
+        "description": "Dịch vụ đã được phục vụ xong",
+        "charge_fee": true
+    },
+    {
+        "id": "Da_Huy",
+        "label": "Đã hủy",
+        "color": "#ef4444",
+        "textColor": "#ffffff",
+        "description": "Dịch vụ đã bị hủy",
+        "charge_fee": false
+    }
+]

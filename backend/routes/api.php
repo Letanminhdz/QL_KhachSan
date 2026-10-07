@@ -47,6 +47,7 @@ Route::middleware('auth:sanctum')->group(function () {
     // Admin dashboard
     Route::get('/admin/dashboard', [AdminController::class, 'dashboard']);
     Route::get('/admin/room-diagram', [AdminController::class, 'roomDiagram']);
+    Route::get('/admin/pending-allocations', [AdminController::class, 'pendingAllocations']);
     Route::get('/admin/dat-phong', [DatPhongController::class, 'index']);
     Route::get('/admin/dat-phong/{id}', [DatPhongController::class, 'show']);
     Route::put('/admin/dat-phong/{id}/status', [DatPhongController::class, 'updateStatus']);

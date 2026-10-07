@@ -22,6 +22,8 @@ services:
       - "8000:8000"
     depends_on:
       - db
+    dns:
+      - 8.8.8.8
     # Cài đặt thêm các extension pdo_mysql cần thiết cho Laravel
     command: >
       sh -c "apt-get update && apt-get install -y libzip-dev zip unzip curl

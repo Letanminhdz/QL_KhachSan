@@ -47,7 +47,7 @@ function App() {
           <Route path="/admin/so-do-phong" element={<AdminDashboard />} />
           <Route path="/admin/dat-phong" element={<QuanLyDatPhong />} />
           <Route path="/admin/su-dung-dich-vu" element={<QuanLyDonDichVu />} />
-          <Route path="/order-dich-vu" element={<OrderDichVu />} />
+          <Route path="/admin/order-dich-vu" element={<OrderDichVu />} />
           <Route path="/admin/thanh-toan" element={<ThanhToan />} />
           <Route path="/admin/cau-hinh" element={<CauHinhWebsite />} />
           <Route path="/admin/chi-tiet-dat-phong" element={<ChiTietDatPhong />} />
