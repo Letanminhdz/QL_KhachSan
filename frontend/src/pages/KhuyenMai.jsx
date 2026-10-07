@@ -7,7 +7,7 @@ export default function KhuyenMai() {
       id: 1,
       title: "Ưu Đãi Nghỉ Dưỡng Mùa Hè 2026",
       description: "Tận hưởng kỳ nghỉ trọn vẹn với gói ưu đãi giảm ngay 25% cho tất cả các hạng phòng khi đặt trước 30 ngày.",
-      image: "https://images.unsplash.com/photo-1499793983690-e29da59ef1c2?ixlib=rb-4.0.3&auto=format&fit=crop&w=1000&q=80",
+      image: "http://localhost:8000/storage/promotions/promo1.jpg",
       code: "SUMMER26",
       date: "Áp dụng đến 30/08/2026",
     },
@@ -15,7 +15,7 @@ export default function KhuyenMai() {
       id: 2,
       title: "Trăng Mật Lãng Mạn",
       description: "Gói dịch vụ cao cấp bao gồm bữa tối lãng mạn bên bờ biển, trang trí phòng miễn phí và dịch vụ đón sân bay 2 chiều.",
-      image: "https://images.unsplash.com/photo-1549294413-26f195200c16?ixlib=rb-4.0.3&auto=format&fit=crop&w=1000&q=80",
+      image: "http://localhost:8000/storage/promotions/promo2.jpg",
       code: "HONEYMOON",
       date: "Áp dụng quanh năm",
     },
@@ -23,7 +23,7 @@ export default function KhuyenMai() {
       id: 3,
       title: "Ưu Đãi Dành Riêng Khách Hàng Thân Thiết",
       description: "Giảm trực tiếp 15% khi xuất trình thẻ thành viên. Tích lũy điểm nhân đôi cho các dịch vụ Nhà hàng và Spa.",
-      image: "https://images.unsplash.com/photo-1540555700478-4be289fbecef?ixlib=rb-4.0.3&auto=format&fit=crop&w=1000&q=80",
+      image: "http://localhost:8000/storage/promotions/promo3.jpg",
       code: "ROYALVIP",
       date: "Không thời hạn",
     }
@@ -34,7 +34,7 @@ export default function KhuyenMai() {
       {/* Banner */}
       <div className="relative bg-slate-900 h-64 flex items-center justify-center overflow-hidden">
         <div className="absolute inset-0 opacity-40">
-          <img src="https://images.unsplash.com/photo-1571003123894-1f0594d2b5d9?ixlib=rb-4.0.3&auto=format&fit=crop&w=1920&q=80" alt="Banner" className="w-full h-full object-cover" />
+          <img src="http://localhost:8000/storage/banners/promotion_hero.jpg" alt="Banner" className="w-full h-full object-cover" />
         </div>
         <div className="relative z-10 text-center px-4">
           <h1 className="text-4xl md:text-5xl font-extrabold text-white mb-4 tracking-tight drop-shadow-lg">Khuyến Mãi & Ưu Đãi</h1>

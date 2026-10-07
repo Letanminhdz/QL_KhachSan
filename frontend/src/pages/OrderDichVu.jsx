@@ -197,7 +197,7 @@ export default function OrderDichVu() {
                       <div key={item.id} onClick={() => addToCart(item)} className="bg-slate-50 rounded-xl border border-slate-200 overflow-hidden hover:shadow-md hover:border-primary-300 transition-all cursor-pointer group">
                         <div className="h-40 overflow-hidden relative">
                           <img
-                            src={item.hinh_anh ? (item.hinh_anh.startsWith('http') ? item.hinh_anh : `http://localhost:8000/${item.hinh_anh}`) : "https://images.unsplash.com/photo-1544161515-4ab6ce6db874?w=400"}
+                            src={item.hinh_anh ? (item.hinh_anh.startsWith('http') ? item.hinh_anh : `http://localhost:8000/${item.hinh_anh}`) : 'http://localhost:8000/storage/defaults/service.jpg'}
                             alt={item.ten_dich_vu}
                             className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
                           />
@@ -252,7 +252,7 @@ export default function OrderDichVu() {
                     <div className="space-y-4">
                       {cartItems.map((item) => (
                         <div key={item.id} className="flex gap-3 items-center group">
-                          <img src={item.hinh_anh ? (item.hinh_anh.startsWith('http') ? item.hinh_anh : `http://localhost:8000/${item.hinh_anh}`) : "https://images.unsplash.com/photo-1544161515-4ab6ce6db874?w=400"} alt={item.ten_dich_vu} className="w-12 h-12 rounded-lg object-cover shadow-sm border border-slate-100" />
+                          <img src={item.hinh_anh ? (item.hinh_anh.startsWith('http') ? item.hinh_anh : `http://localhost:8000/${item.hinh_anh}`) : 'http://localhost:8000/storage/defaults/service.jpg'} alt={item.ten_dich_vu} className="w-12 h-12 rounded-lg object-cover shadow-sm border border-slate-100" />
                           <div className="flex-1 min-w-0">
                             <h6 className="font-bold text-slate-800 text-sm truncate">{item.ten_dich_vu}</h6>
                             <div className="text-primary-600 font-extrabold text-xs">{Number(item.gia).toLocaleString()}₫</div>

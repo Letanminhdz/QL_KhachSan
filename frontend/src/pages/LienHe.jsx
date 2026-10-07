@@ -17,7 +17,7 @@ export default function LienHe() {
       {/* Banner */}
       <div className="relative bg-slate-900 h-48 flex items-center justify-center overflow-hidden">
         <div className="absolute inset-0 opacity-40">
-          <img src="https://images.unsplash.com/photo-1566073771259-6a8506099945?ixlib=rb-4.0.3&auto=format&fit=crop&w=1920&q=80" alt="Banner" className="w-full h-full object-cover" />
+          <img src="http://localhost:8000/storage/banners/contact_hero.jpg" alt="Banner" className="w-full h-full object-cover" />
         </div>
         <div className="relative z-10 text-center px-4">
           <h1 className="text-4xl font-extrabold text-white tracking-tight drop-shadow-lg">Liên Hệ</h1>
