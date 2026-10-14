@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+import { formatDate as formatDateUtil, formatDateTime } from "../utils/dateHelper";
 import { Link, useSearchParams, useNavigate } from "react-router-dom";
 import { useUI } from "../contexts/UIContext";
 import { tinhTienPhong } from "../utils/tinhTienPhong";
@@ -145,11 +146,8 @@ export default function ThanhToan() {
 
   const formatDate = (dateString, includeTime = false) => {
     if (!dateString) return "";
-    const date = new Date(dateString);
-    if (includeTime) {
-      return date.toLocaleDateString('vi-VN') + " " + date.toLocaleTimeString('vi-VN', {hour: '2-digit', minute:'2-digit'});
-    }
-    return date.toLocaleDateString('vi-VN');
+    if (includeTime) return formatDateTime(dateString);
+    return formatDateUtil(dateString);
   };
 
   if (loading) {

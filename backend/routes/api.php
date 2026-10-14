@@ -25,7 +25,11 @@ Route::get('/phong', [PhongController::class, 'index']);
 Route::post('/phong/tim-kiem', [PhongController::class, 'timKiem']);
 
 // Đặt phòng không cần đăng nhập
-Route::post('/dat-phong/khach-vang-lai', [DatPhongController::class, 'store']); 
+Route::post('/dat-phong/khach-vang-lai', [DatPhongController::class, 'store']);
+
+// Chatbot AI tu van phong
+Route::post('/chat-bot', [\App\Http\Controllers\API\ChatBotController::class, 'chat']);
+Route::post('/chat-bot/book-direct', [\App\Http\Controllers\API\ChatBotController::class, 'bookRoomDirect']); 
 
 // Protected routes (Requires token)
 Route::middleware('auth:sanctum')->group(function () {

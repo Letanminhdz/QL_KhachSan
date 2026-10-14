@@ -1,8 +1,10 @@
 import { useState, useEffect } from "react";
+import { formatDate as formatDateUtil, formatDateTime } from "../utils/dateHelper";
 import { useUI } from "../contexts/UIContext";
 import { useNavigate } from "react-router-dom";
 import SearchBar from "../components/SearchBar";
 import BookingStatusSettingsModal from "../components/BookingStatusSettingsModal";
+import TaoDonDatPhongModal from "../components/TaoDonDatPhongModal";
 
 export default function QuanLyDatPhong() {
   const [activeStatus, setActiveStatus] = useState("");
@@ -12,54 +14,55 @@ export default function QuanLyDatPhong() {
   const [loading, setLoading] = useState(true);
   const [selectedBooking, setSelectedBooking] = useState(null);
   const [showSettingsModal, setShowSettingsModal] = useState(false);
+  const [showCreateModal, setShowCreateModal] = useState(false);
   const [depositPercentage, setDepositPercentage] = useState(30);
   const { showToast, showConfirm } = useUI();
   const navigate = useNavigate();
 
   useEffect(() => {
+    const fetchConfigsAndData = async () => {
+      try {
+        const token = localStorage.getItem("token");
+        const headers = {
+          "Authorization": `Bearer ${token}`,
+          "Accept": "application/json"
+        };
+
+        const [resConfig, resData, resSettings] = await Promise.all([
+          fetch("http://localhost:8000/api/admin/booking-statuses", { headers }),
+          fetch("http://localhost:8000/api/admin/dat-phong", { headers }),
+          fetch("http://localhost:8000/api/settings")
+        ]);
+
+        if (resConfig.ok) {
+          const configs = await resConfig.json();
+          setStatusConfigs(configs);
+          if (configs.length > 0) {
+            setActiveStatus(configs[0].id);
+          }
+        }
+        
+        if (resData.ok) {
+          setDatPhongs(await resData.json());
+        } else {
+          showToast("Lỗi khi lấy danh sách đơn đặt phòng", "error");
+        }
+
+        if (resSettings.ok) {
+          const sData = await resSettings.json();
+          if (sData.deposit_percentage !== undefined) {
+            setDepositPercentage(Number(sData.deposit_percentage));
+          }
+        }
+      } catch {
+        showToast("Không thể kết nối đến máy chủ", "error");
+      } finally {
+        setLoading(false);
+      }
+    };
+
     fetchConfigsAndData();
-  }, []);
-
-  const fetchConfigsAndData = async () => {
-    try {
-      const token = localStorage.getItem("token");
-      const headers = {
-        "Authorization": `Bearer ${token}`,
-        "Accept": "application/json"
-      };
-
-      const [resConfig, resData, resSettings] = await Promise.all([
-        fetch("http://localhost:8000/api/admin/booking-statuses", { headers }),
-        fetch("http://localhost:8000/api/admin/dat-phong", { headers }),
-        fetch("http://localhost:8000/api/settings")
-      ]);
-
-      if (resConfig.ok) {
-        const configs = await resConfig.json();
-        setStatusConfigs(configs);
-        if (configs.length > 0) {
-          setActiveStatus(configs[0].id);
-        }
-      }
-      
-      if (resData.ok) {
-        setDatPhongs(await resData.json());
-      } else {
-        showToast("Lỗi khi lấy danh sách đơn đặt phòng", "error");
-      }
-
-      if (resSettings.ok) {
-        const sData = await resSettings.json();
-        if (sData.deposit_percentage !== undefined) {
-          setDepositPercentage(Number(sData.deposit_percentage));
-        }
-      }
-    } catch (e) {
-      showToast("Không thể kết nối đến máy chủ", "error");
-    } finally {
-      setLoading(false);
-    }
-  };
+  }, [showToast]);
 
   const fetchDatPhongs = async () => {
     try {
@@ -74,7 +77,7 @@ export default function QuanLyDatPhong() {
         const data = await res.json();
         setDatPhongs(data);
       }
-    } catch (e) {
+    } catch {
       // ignore
     }
   };
@@ -98,7 +101,7 @@ export default function QuanLyDatPhong() {
         } else {
           showToast("Có lỗi xảy ra khi cập nhật", "error");
         }
-      } catch (e) {
+      } catch {
         showToast("Lỗi kết nối đến máy chủ", "error");
       }
     });
@@ -132,7 +135,7 @@ export default function QuanLyDatPhong() {
         } else {
           showToast("Lỗi cập nhật", "error");
         }
-      } catch (e) {
+      } catch {
         showToast("Lỗi kết nối", "error");
       }
     });
@@ -159,9 +162,8 @@ export default function QuanLyDatPhong() {
 
   const formatDate = (dateString, time = false) => {
     if (!dateString) return "";
-    const date = new Date(dateString);
-    if (time) return date.toLocaleTimeString('vi-VN', {hour:'2-digit', minute:'2-digit'}) + " " + date.toLocaleDateString('vi-VN');
-    return date.toLocaleDateString('vi-VN');
+    if (time) return formatDateTime(dateString);
+    return formatDateUtil(dateString);
   };
 
   const filteredData = getFilteredData();
@@ -189,9 +191,17 @@ export default function QuanLyDatPhong() {
           <div className="flex-1 md:w-72 min-w-0">
              <SearchBar value={searchTerm} onChange={setSearchTerm} placeholder="Tìm đơn, SĐT, mã phòng..." />
           </div>
+          <button
+            onClick={() => setShowCreateModal(true)}
+            className="bg-primary-600 hover:bg-primary-700 text-white font-bold flex items-center justify-center gap-2 px-3 md:px-4 py-2 rounded-lg transition-all shadow-sm w-auto h-[42px] whitespace-nowrap shrink-0 cursor-pointer"
+          >
+            <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 4v16m8-8H4"></path></svg>
+            <span className="hidden sm:inline">Tạo Đơn Mới</span>
+          </button>
+
           <button 
             onClick={fetchDatPhongs} 
-            className="text-primary-700 hover:text-primary-800 font-bold flex items-center justify-center gap-2 bg-primary-50 border border-primary-200 hover:bg-primary-100 px-3 md:px-4 py-2 rounded-lg transition-colors w-auto h-[42px] whitespace-nowrap shrink-0"
+            className="text-primary-700 hover:text-primary-800 font-bold flex items-center justify-center gap-2 bg-primary-50 border border-primary-200 hover:bg-primary-100 px-3 md:px-4 py-2 rounded-lg transition-colors w-auto h-[42px] whitespace-nowrap shrink-0 cursor-pointer"
           >
             <svg className={`w-5 h-5 ${loading ? 'animate-spin' : ''}`} fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"></path></svg>
             <span className="hidden md:inline">Làm mới</span>
@@ -321,8 +331,8 @@ export default function QuanLyDatPhong() {
                   <div className="bg-slate-50 p-4 rounded-xl space-y-2">
                     <p className="text-sm"><span className="text-slate-500 inline-block w-24">Loại phòng:</span> <span className="font-bold text-slate-800">{selectedBooking.ten_loai_phong_khi_dat}</span></p>
                     <p className="text-sm"><span className="text-slate-500 inline-block w-24">Số lượng:</span> <span className="font-bold text-slate-800">{selectedBooking.so_luong_phong} phòng</span></p>
-                    <p className="text-sm"><span className="text-slate-500 inline-block w-24">Nhận phòng:</span> <span className="font-bold text-emerald-600">{formatDate(selectedBooking.ngay_nhan_phong)}</span></p>
-                    <p className="text-sm"><span className="text-slate-500 inline-block w-24">Trả phòng:</span> <span className="font-bold text-red-600">{formatDate(selectedBooking.ngay_tra_phong)}</span></p>
+                    <p className="text-sm"><span className="text-slate-500 inline-block w-24">Nhận phòng:</span> <span className="font-bold text-emerald-600">{formatDate(selectedBooking.ngay_nhan_phong, true)}</span></p>
+                    <p className="text-sm"><span className="text-slate-500 inline-block w-24">Trả phòng:</span> <span className="font-bold text-red-600">{formatDate(selectedBooking.ngay_tra_phong, true)}</span></p>
                   </div>
                 </div>
               </div>
@@ -393,6 +403,12 @@ export default function QuanLyDatPhong() {
           </div>
         </div>
       )}
+      <TaoDonDatPhongModal
+        isOpen={showCreateModal}
+        onClose={() => setShowCreateModal(false)}
+        onSuccess={() => fetchDatPhongs()}
+      />
+
       {showSettingsModal && (
         <BookingStatusSettingsModal 
           onClose={() => setShowSettingsModal(false)} 

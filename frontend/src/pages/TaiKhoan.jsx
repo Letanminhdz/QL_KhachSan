@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+import { formatDate as formatDateUtil, formatDateTime } from "../utils/dateHelper";
 import { useNavigate } from "react-router-dom";
 import { useUI } from "../contexts/UIContext";
 
@@ -133,9 +134,8 @@ export default function TaiKhoan() {
 
   const formatDate = (dateString, time = false) => {
     if (!dateString) return "";
-    const date = new Date(dateString);
-    if (time) return date.toLocaleTimeString('vi-VN', { hour: '2-digit', minute: '2-digit' }) + " " + date.toLocaleDateString('vi-VN');
-    return date.toLocaleDateString('vi-VN');
+    if (time) return formatDateTime(dateString);
+    return formatDateUtil(dateString);
   };
 
   const viewBookingDetail = (booking) => {
@@ -396,13 +396,13 @@ export default function TaiKhoan() {
                       <span className="text-slate-500 text-sm flex items-center gap-2">
                         <span className="w-2 h-2 rounded-full bg-emerald-500"></span> Nhận phòng:
                       </span>
-                      <span className="font-bold text-slate-800">{formatDate(selectedBooking.ngay_nhan_phong)}</span>
+                      <span className="font-bold text-slate-800">{formatDate(selectedBooking.ngay_nhan_phong, true)}</span>
                     </div>
                     <div className="flex justify-between items-center">
                       <span className="text-slate-500 text-sm flex items-center gap-2">
                         <span className="w-2 h-2 rounded-full bg-red-500"></span> Trả phòng:
                       </span>
-                      <span className="font-bold text-slate-800">{formatDate(selectedBooking.ngay_tra_phong)}</span>
+                      <span className="font-bold text-slate-800">{formatDate(selectedBooking.ngay_tra_phong, true)}</span>
                     </div>
                   </div>
                 </div>

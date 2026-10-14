@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+import { formatDateTime } from "../utils/dateHelper";
 import { Link, useNavigate } from "react-router-dom";
 
 export default function AdminDashboard() {
@@ -375,7 +376,7 @@ export default function AdminDashboard() {
                         </h6>
                         <div className="text-sm text-slate-600 mt-2 space-y-1">
                           <p><span className="font-medium">SĐT:</span> {order.sdt_khach_hang}</p>
-                          <p><span className="font-medium">Ngày đặt:</span> {new Date(order.ngay_dat).toLocaleString()}</p>
+                          <p><span className="font-medium">Ngày đặt:</span> {formatDateTime(order.ngay_dat)}</p>
                           <p><span className="font-medium">Trạng thái:</span> <span className="text-primary-600 font-bold">{order.trang_thai}</span></p>
                           <p><span className="font-medium">Phòng đã xếp tạm:</span> <span className="bg-amber-100 text-amber-800 px-2 py-0.5 rounded font-bold">{order.phong_da_gan || 'Chưa gán phòng'}</span></p>
                         </div>

@@ -2,6 +2,7 @@ import { Link, useNavigate, useLocation } from "react-router-dom";
 import { useState, useEffect } from "react";
 import { useUI } from "../contexts/UIContext";
 import { tinhTienPhong } from "../utils/tinhTienPhong";
+import { formatDateTime, toDateTimeLocal } from "../utils/dateHelper";
 
 export default function Checkout() {
   const navigate = useNavigate();
@@ -23,8 +24,23 @@ export default function Checkout() {
     return `${d.getFullYear()}-${pad(d.getMonth()+1)}-${pad(d.getDate())}T${pad(d.getHours())}:${pad(d.getMinutes())}`;
   };
 
-  const checkIn = queryParams.get("in") || getDefaultDate(false);
-  const checkOut = queryParams.get("out") || getDefaultDate(true);
+  const rawCheckIn = queryParams.get("in") || getDefaultDate(false);
+  const checkIn = (() => {
+    if (new Date(rawCheckIn) < new Date(Date.now() - 5 * 60 * 1000)) {
+      return getDefaultDate(false);
+    }
+    return rawCheckIn;
+  })();
+
+  const rawCheckOut = queryParams.get("out") || getDefaultDate(true);
+  const checkOut = (() => {
+    if (new Date(rawCheckOut) <= new Date(checkIn)) {
+      const d = new Date(checkIn);
+      d.setDate(d.getDate() + 1);
+      return toDateTimeLocal(d);
+    }
+    return rawCheckOut;
+  })();
 
   const [formData, setFormData] = useState({
     ho_ten: "",
@@ -73,6 +89,14 @@ export default function Checkout() {
 
   const handleCheckout = async (e) => {
     e.preventDefault();
+    if (new Date(checkIn) < new Date(Date.now() - 5 * 60 * 1000)) {
+      showToast("Thời gian nhận phòng không thể ở quá khứ!", "error");
+      return;
+    }
+    if (new Date(checkOut) <= new Date(checkIn)) {
+      showToast("Thời gian trả phòng phải sau thời gian nhận phòng!", "error");
+      return;
+    }
     setLoading(true);
 
     const payload = {
@@ -125,8 +149,7 @@ export default function Checkout() {
   const totalPrice = ketQuaTinh.tongTien * count; // Tổng tiền tính luôn theo số lượng phòng
 
   const formatDate = (dateString) => {
-    if (!dateString) return "";
-    return new Date(dateString).toLocaleString('vi-VN', {day:'2-digit', month:'2-digit', year:'numeric', hour:'2-digit', minute:'2-digit'});
+    return formatDateTime(dateString);
   };
 
   const formatCurrency = (amount) => {
@@ -159,27 +182,27 @@ export default function Checkout() {
 
               <div className="p-6">
                 <form onSubmit={handleCheckout} className="space-y-5">
-                  <div>
-                    <label className="block text-sm font-semibold text-slate-700 mb-1">
-                      Họ và tên <span className="text-red-500">*</span>
-                    </label>
-                    <div className="relative">
-                      <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                        <svg className="h-5 w-5 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path></svg>
-                      </div>
-                      <input
-                        type="text"
-                        name="ho_ten"
-                        value={formData.ho_ten}
-                        onChange={handleChange}
-                        className="block w-full pl-10 pr-3 py-2 border border-slate-300 rounded-lg focus:ring-primary-500 focus:border-primary-500 sm:text-sm"
-                        placeholder="Nguyễn Văn A"
-                        required
-                      />
-                    </div>
-                  </div>
-
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
+                    <div>
+                      <label className="block text-sm font-semibold text-slate-700 mb-1">
+                        Họ và tên <span className="text-red-500">*</span>
+                      </label>
+                      <div className="relative">
+                        <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                          <svg className="h-5 w-5 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path></svg>
+                        </div>
+                        <input
+                          type="text"
+                          name="ho_ten"
+                          value={formData.ho_ten}
+                          onChange={handleChange}
+                          className="block w-full pl-10 pr-3 py-2 border border-slate-300 rounded-lg focus:ring-primary-500 focus:border-primary-500 sm:text-sm"
+                          placeholder="Nguyễn Văn A"
+                          required
+                        />
+                      </div>
+                    </div>
+
                     <div>
                       <label className="block text-sm font-semibold text-slate-700 mb-1">
                         Số điện thoại <span className="text-red-500">*</span>
@@ -196,24 +219,6 @@ export default function Checkout() {
                           className="block w-full pl-10 pr-3 py-2 border border-slate-300 rounded-lg focus:ring-primary-500 focus:border-primary-500 sm:text-sm"
                           placeholder="0901234567"
                           required
-                        />
-                      </div>
-                    </div>
-                    <div>
-                      <label className="block text-sm font-semibold text-slate-700 mb-1">
-                        Email
-                      </label>
-                      <div className="relative">
-                        <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                          <svg className="h-5 w-5 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"></path></svg>
-                        </div>
-                        <input
-                          type="email"
-                          name="email"
-                          value={formData.email}
-                          onChange={handleChange}
-                          className="block w-full pl-10 pr-3 py-2 border border-slate-300 rounded-lg focus:ring-primary-500 focus:border-primary-500 sm:text-sm"
-                          placeholder="email@domain.com"
                         />
                       </div>
                     </div>

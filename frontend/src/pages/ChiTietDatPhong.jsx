@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+import { formatDateTime } from "../utils/dateHelper";
 import { useSearchParams, Link } from "react-router-dom";
 import { useUI } from "../contexts/UIContext";
 
@@ -8,16 +9,17 @@ export default function ChiTietDatPhong() {
   const { user } = useUI();
 
   const [booking, setBooking] = useState(null);
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(() => Boolean(id && user));
   const [statusConfigs, setStatusConfigs] = useState([]);
 
   useEffect(() => {
     if (!id || !user) {
-      setLoading(false);
       return;
     }
 
+    let isMounted = true;
     const fetchBookingAndStatuses = async () => {
+      setLoading(true);
       try {
         const token = localStorage.getItem("token");
 
@@ -50,11 +52,14 @@ export default function ChiTietDatPhong() {
       } catch (err) {
         console.error(err);
       } finally {
-        setLoading(false);
+        if (isMounted) setLoading(false);
       }
     };
 
     fetchBookingAndStatuses();
+    return () => {
+      isMounted = false;
+    };
   }, [id, user]);
 
   const getStatusDisplay = (statusId) => {
@@ -66,9 +71,7 @@ export default function ChiTietDatPhong() {
   };
 
   const formatDate = (dateString) => {
-    if (!dateString) return "";
-    const date = new Date(dateString);
-    return date.toLocaleDateString('vi-VN') + " " + date.toLocaleTimeString('vi-VN', { hour: '2-digit', minute: '2-digit' });
+    return formatDateTime(dateString);
   };
 
   if (loading) {

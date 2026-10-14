@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+import { formatDate, formatDateTime, toDateTimeLocal, getNowDateTimeLocal } from "../utils/dateHelper";
 import { Link, useNavigate, useSearchParams } from "react-router-dom";
 
 export default function TimPhong() {
@@ -28,8 +29,23 @@ export default function TimPhong() {
     return formatForDateTimeLocal(d);
   };
 
-  const [checkIn, setCheckIn] = useState(() => searchParams.get('checkIn') ? formatForDateTimeLocal(searchParams.get('checkIn')) : getDefaultDate(false));
-  const [checkOut, setCheckOut] = useState(() => searchParams.get('checkOut') ? formatForDateTimeLocal(searchParams.get('checkOut')) : getDefaultDate(true));
+  const [checkIn, setCheckIn] = useState(() => {
+    const paramIn = searchParams.get('checkIn') ? formatForDateTimeLocal(searchParams.get('checkIn')) : getDefaultDate(false);
+    if (new Date(paramIn) < new Date(Date.now() - 5 * 60 * 1000)) {
+      return getDefaultDate(false);
+    }
+    return paramIn;
+  });
+  const [checkOut, setCheckOut] = useState(() => {
+    const paramIn = searchParams.get('checkIn') ? formatForDateTimeLocal(searchParams.get('checkIn')) : getDefaultDate(false);
+    const paramOut = searchParams.get('checkOut') ? formatForDateTimeLocal(searchParams.get('checkOut')) : getDefaultDate(true);
+    if (new Date(paramOut) <= new Date(paramIn)) {
+      const nextD = new Date(paramIn);
+      nextD.setDate(nextD.getDate() + 1);
+      return toDateTimeLocal(nextD);
+    }
+    return paramOut;
+  });
   const [adults, setAdults] = useState(() => parseInt(searchParams.get('adults')) || 1);
   const [children, setChildren] = useState(() => parseInt(searchParams.get('children')) || 0);
   const [showFilterBar, setShowFilterBar] = useState(true);
@@ -98,8 +114,41 @@ export default function TimPhong() {
     fetchRooms(checkIn, checkOut);
   }, []);
 
+  const handleCheckInChange = (newVal) => {
+    setCheckIn(newVal);
+    if (!newVal) return;
+    const inDate = new Date(newVal);
+    const outDate = new Date(checkOut);
+    if (isNaN(outDate.getTime()) || outDate <= inDate) {
+      const nextOut = new Date(inDate);
+      nextOut.setDate(nextOut.getDate() + 1);
+      setCheckOut(toDateTimeLocal(nextOut));
+    }
+  };
+
+  const handleCheckOutChange = (newVal) => {
+    if (!newVal) return;
+    const inDate = new Date(checkIn);
+    const outDate = new Date(newVal);
+    if (outDate <= inDate) {
+      const nextOut = new Date(inDate);
+      nextOut.setDate(nextOut.getDate() + 1);
+      setCheckOut(toDateTimeLocal(nextOut));
+      return;
+    }
+    setCheckOut(newVal);
+  };
+
   const handleSearch = (e) => {
     e.preventDefault();
+    if (new Date(checkIn) < new Date(Date.now() - 5 * 60 * 1000)) {
+      setError("Thời gian nhận phòng không thể ở quá khứ!");
+      return;
+    }
+    if (new Date(checkOut) <= new Date(checkIn)) {
+      setError("Thời gian trả phòng phải sau thời gian nhận phòng!");
+      return;
+    }
     fetchRooms(checkIn, checkOut);
   };
 
@@ -144,7 +193,7 @@ export default function TimPhong() {
               <div className="relative mt-0.5">
                 <div className="font-bold text-slate-900 pointer-events-none text-sm md:text-base flex items-center justify-center w-full gap-2">
                   <span>
-                    {checkIn ? new Date(checkIn).toLocaleString('vi-VN', { day: '2-digit', month: '2-digit', year: 'numeric', hour: '2-digit', minute: '2-digit' }) : ""}
+                    {checkIn ? formatDateTime(checkIn) : ""}
                   </span>
                   <svg
                     className="w-3.5 h-3.5 text-slate-400"
@@ -163,7 +212,8 @@ export default function TimPhong() {
                 <input
                   type="datetime-local"
                   value={checkIn}
-                  onChange={(e) => setCheckIn(e.target.value)}
+                  min={getNowDateTimeLocal()}
+                  onChange={(e) => handleCheckInChange(e.target.value)}
                   required
                   className="absolute inset-0 w-full h-full opacity-0 cursor-pointer"
                 />
@@ -189,7 +239,7 @@ export default function TimPhong() {
               <div className="relative mt-0.5">
                 <div className="font-bold text-slate-900 pointer-events-none text-sm md:text-base flex items-center justify-center w-full gap-2">
                   <span>
-                    {checkOut ? new Date(checkOut).toLocaleString('vi-VN', { day: '2-digit', month: '2-digit', year: 'numeric', hour: '2-digit', minute: '2-digit' }) : ""}
+                    {checkOut ? formatDateTime(checkOut) : ""}
                   </span>
                   <svg
                     className="w-3.5 h-3.5 text-slate-400"
@@ -208,7 +258,8 @@ export default function TimPhong() {
                 <input
                   type="datetime-local"
                   value={checkOut}
-                  onChange={(e) => setCheckOut(e.target.value)}
+                  min={checkIn || getNowDateTimeLocal()}
+                  onChange={(e) => handleCheckOutChange(e.target.value)}
                   required
                   className="absolute inset-0 w-full h-full opacity-0 cursor-pointer"
                 />
@@ -299,7 +350,7 @@ export default function TimPhong() {
                   d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"
                 ></path>
               </svg>
-              {checkIn && new Date(checkIn).toLocaleDateString('vi-VN')} &rarr; {checkOut && new Date(checkOut).toLocaleDateString('vi-VN')} &middot;{" "}
+              {checkIn && formatDate(checkIn)} &rarr; {checkOut && formatDate(checkOut)} &middot;{" "}
               <span className="font-bold text-slate-700">{checkIn && checkOut ? Math.max(1, Math.ceil((new Date(checkOut) - new Date(checkIn)) / (1000 * 60 * 60 * 24))) : 1} đêm</span> &middot; {adults}
               người lớn
             </p>

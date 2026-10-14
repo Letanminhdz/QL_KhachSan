@@ -1,5 +1,6 @@
 import { Link, useNavigate } from "react-router-dom";
 import { useState, useEffect } from "react";
+import { formatDateTime, toDateTimeLocal, getNowDateTimeLocal } from "../utils/dateHelper";
 
 export default function Home() {
   const navigate = useNavigate();
@@ -50,8 +51,41 @@ export default function Home() {
     fetchRooms();
   }, []);
 
+  const handleCheckInChange = (newVal) => {
+    setCheckIn(newVal);
+    if (!newVal) return;
+    const inDate = new Date(newVal);
+    const outDate = new Date(checkOut);
+    if (isNaN(outDate.getTime()) || outDate <= inDate) {
+      const nextOut = new Date(inDate);
+      nextOut.setDate(nextOut.getDate() + 1);
+      setCheckOut(toDateTimeLocal(nextOut));
+    }
+  };
+
+  const handleCheckOutChange = (newVal) => {
+    if (!newVal) return;
+    const inDate = new Date(checkIn);
+    const outDate = new Date(newVal);
+    if (outDate <= inDate) {
+      const nextOut = new Date(inDate);
+      nextOut.setDate(nextOut.getDate() + 1);
+      setCheckOut(toDateTimeLocal(nextOut));
+      return;
+    }
+    setCheckOut(newVal);
+  };
+
   const handleSearch = (e) => {
     e.preventDefault();
+    if (new Date(checkIn) < new Date(Date.now() - 5 * 60 * 1000)) {
+      alert("Thời gian nhận phòng không thể ở quá khứ!");
+      return;
+    }
+    if (new Date(checkOut) <= new Date(checkIn)) {
+      alert("Thời gian trả phòng phải sau thời gian nhận phòng!");
+      return;
+    }
     navigate(
       `/tim-phong?checkIn=${checkIn}&checkOut=${checkOut}&adults=${adults}&children=${children}`,
     );
@@ -153,7 +187,7 @@ export default function Home() {
                     <div className="relative mt-0.5">
                       <div className="font-bold text-slate-900 pointer-events-none text-sm md:text-base flex items-center justify-center w-full gap-2">
                         <span>
-                          {checkIn ? new Date(checkIn).toLocaleString('vi-VN', { day: '2-digit', month: '2-digit', year: 'numeric', hour: '2-digit', minute: '2-digit' }) : ""}
+                          {checkIn ? formatDateTime(checkIn) : ""}
                         </span>
                         <svg
                           className="w-3.5 h-3.5 text-slate-400"
@@ -172,7 +206,8 @@ export default function Home() {
                       <input
                         type="datetime-local"
                         value={checkIn}
-                        onChange={(e) => setCheckIn(e.target.value)}
+                        min={getNowDateTimeLocal()}
+                        onChange={(e) => handleCheckInChange(e.target.value)}
                         required
                         className="absolute inset-0 w-full h-full opacity-0 cursor-pointer"
                       />
@@ -198,7 +233,7 @@ export default function Home() {
                     <div className="relative mt-0.5">
                       <div className="font-bold text-slate-900 pointer-events-none text-sm md:text-base flex items-center justify-center w-full gap-2">
                         <span>
-                          {checkOut ? new Date(checkOut).toLocaleString('vi-VN', { day: '2-digit', month: '2-digit', year: 'numeric', hour: '2-digit', minute: '2-digit' }) : ""}
+                          {checkOut ? formatDateTime(checkOut) : ""}
                         </span>
                         <svg
                           className="w-3.5 h-3.5 text-slate-400"
@@ -217,7 +252,8 @@ export default function Home() {
                       <input
                         type="datetime-local"
                         value={checkOut}
-                        onChange={(e) => setCheckOut(e.target.value)}
+                        min={checkIn || getNowDateTimeLocal()}
+                        onChange={(e) => handleCheckOutChange(e.target.value)}
                         required
                         className="absolute inset-0 w-full h-full opacity-0 cursor-pointer"
                       />
