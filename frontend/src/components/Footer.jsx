@@ -19,7 +19,7 @@ export default function Footer() {
           <div className="lg:col-span-4">
             <div className="flex items-center gap-2.5 mb-3">
               <img
-                src="/favicon.png"
+                src="./favicon.png"
                 alt="Royal Hotel"
                 className="w-7 h-7 rounded-lg object-contain shadow-xs shrink-0"
               />

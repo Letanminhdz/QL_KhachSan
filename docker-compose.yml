@@ -3,7 +3,7 @@ services:
   db:
     image: mysql:8.0
     container_name: qlkhachsan_db
-    restart: always
+    restart: "no"
     ports:
       - "33060:3306"
     environment:

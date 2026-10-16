@@ -24,10 +24,17 @@ export default function AdminDashboard() {
       }
       
       const [resDiagram, resStatus] = await Promise.all([
-        fetch('http://localhost:8000/api/admin/room-diagram', { headers: { 'Authorization': `Bearer ${token}` } }),
-        fetch('http://localhost:8000/api/admin/room-statuses', { headers: { 'Authorization': `Bearer ${token}` } })
+        fetch('http://localhost:8000/api/admin/room-diagram', { headers: { 'Authorization': `Bearer ${token}`, 'Accept': 'application/json' } }),
+        fetch('http://localhost:8000/api/admin/room-statuses', { headers: { 'Authorization': `Bearer ${token}`, 'Accept': 'application/json' } })
       ]);
       
+      if (resDiagram.status === 401 || resStatus.status === 401) {
+        localStorage.removeItem("token");
+        localStorage.removeItem("user");
+        navigate("/dang-nhap");
+        return;
+      }
+
       if (!resDiagram.ok) throw new Error("Lỗi mạng");
       
       setData(await resDiagram.json());
@@ -106,7 +113,7 @@ export default function AdminDashboard() {
       const token = localStorage.getItem('token');
       const room = statusModal.room;
       // Fetch room data first to get required fields
-      const resRoom = await fetch(`http://localhost:8000/api/admin/phong`, { headers: { 'Authorization': `Bearer ${token}` } });
+      const resRoom = await fetch(`http://localhost:8000/api/admin/phong`, { headers: { 'Authorization': `Bearer ${token}`, 'Accept': 'application/json' } });
       const rooms = await resRoom.json();
       const fullRoom = (Array.isArray(rooms) ? rooms : (rooms.data || [])).find(r => r.id === room.id) || room;
       

@@ -22,7 +22,7 @@ export default function Navbar() {
               className="text-lg sm:text-xl font-extrabold tracking-tight text-slate-900 flex items-center gap-2"
             >
               <img
-                src="/favicon.png"
+                src="./favicon.png"
                 alt="Royal Hotel"
                 className="w-8 h-8 rounded-lg object-contain shadow-xs shrink-0"
               />

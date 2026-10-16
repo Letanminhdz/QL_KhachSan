@@ -62,6 +62,12 @@ export default function Admin() {
         fetch("http://localhost:8000/api/admin/tang", { headers }),
         fetch("http://localhost:8000/api/admin/room-statuses", { headers })
       ]);
+      if (resLp.status === 401 || resTang.status === 401 || resStatus.status === 401) {
+        localStorage.removeItem("token");
+        localStorage.removeItem("user");
+        navigate("/dang-nhap");
+        return;
+      }
       if (resLp.ok) setLoaiPhongs(await resLp.json());
       if (resTang.ok) setTangs(await resTang.json());
       if (resStatus.ok) setRoomStatuses(await resStatus.json());
@@ -217,22 +223,28 @@ export default function Admin() {
     setLoading(true);
     let endpoint = "";
     switch (activeTab) {
-      case "phong": endpoint = "/api/admin/phong"; break;
-      case "tang": endpoint = "/api/admin/tang"; break;
-      case "loaiphong": endpoint = "/api/admin/loai-phong"; break;
-      case "dichvu": endpoint = "/api/admin/dich-vu"; break;
-      case "nguoidung": endpoint = "/api/admin/tai-khoan"; break;
+      case "phong": endpoint = "api/admin/phong"; break;
+      case "tang": endpoint = "api/admin/tang"; break;
+      case "loaiphong": endpoint = "api/admin/loai-phong"; break;
+      case "dichvu": endpoint = "api/admin/dich-vu"; break;
+      case "nguoidung": endpoint = "api/admin/tai-khoan"; break;
       default: break;
     }
     
     try {
       const token = localStorage.getItem("token");
-      const res = await fetch(`http://localhost:8000${endpoint}`, {
+      const res = await fetch(`http://localhost:8000/${endpoint}`, {
         headers: {
           "Authorization": `Bearer ${token}`,
           "Accept": "application/json"
         }
       });
+      if (res.status === 401) {
+        localStorage.removeItem("token");
+        localStorage.removeItem("user");
+        navigate("/dang-nhap");
+        return;
+      }
       if (res.ok) {
         setData(await res.json());
       } else {
@@ -298,16 +310,16 @@ export default function Admin() {
     e.preventDefault();
     let endpoint = "";
     switch (activeTab) {
-      case "phong": endpoint = "/api/admin/phong"; break;
-      case "tang": endpoint = "/api/admin/tang"; break;
-      case "loaiphong": endpoint = "/api/admin/loai-phong"; break;
-      case "dichvu": endpoint = "/api/admin/dich-vu"; break;
-      case "nguoidung": endpoint = "/api/admin/tai-khoan"; break;
+      case "phong": endpoint = "api/admin/phong"; break;
+      case "tang": endpoint = "api/admin/tang"; break;
+      case "loaiphong": endpoint = "api/admin/loai-phong"; break;
+      case "dichvu": endpoint = "api/admin/dich-vu"; break;
+      case "nguoidung": endpoint = "api/admin/tai-khoan"; break;
       default: break;
     }
 
     const isEdit = !!editingItem;
-    const url = `http://localhost:8000${endpoint}${isEdit ? `/${editingItem.id}` : ''}`;
+    const url = `http://localhost:8000/${endpoint}${isEdit ? `/${editingItem.id}` : ''}`;
     
     try {
       const token = localStorage.getItem("token");
@@ -396,17 +408,17 @@ export default function Admin() {
     showConfirm("Bạn có chắc chắn muốn xóa dữ liệu này?", async () => {
       let endpoint = "";
       switch (activeTab) {
-        case "phong": endpoint = "/api/admin/phong"; break;
-        case "tang": endpoint = "/api/admin/tang"; break;
-        case "loaiphong": endpoint = "/api/admin/loai-phong"; break;
-        case "dichvu": endpoint = "/api/admin/dich-vu"; break;
-        case "nguoidung": endpoint = "/api/admin/tai-khoan"; break;
+        case "phong": endpoint = "api/admin/phong"; break;
+        case "tang": endpoint = "api/admin/tang"; break;
+        case "loaiphong": endpoint = "api/admin/loai-phong"; break;
+        case "dichvu": endpoint = "api/admin/dich-vu"; break;
+        case "nguoidung": endpoint = "api/admin/tai-khoan"; break;
         default: break;
       }
       
       try {
         const token = localStorage.getItem("token");
-        const res = await fetch(`http://localhost:8000${endpoint}/${id}`, {
+        const res = await fetch(`http://localhost:8000/${endpoint}/${id}`, {
           method: "DELETE",
           headers: {
             "Authorization": `Bearer ${token}`,

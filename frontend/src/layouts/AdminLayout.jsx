@@ -1,4 +1,4 @@
-import { Outlet, Link, useLocation } from "react-router-dom";
+import { Outlet, Link, useLocation, useNavigate } from "react-router-dom";
 import { useUI } from "../contexts/UIContext";
 import { useState } from "react";
 
@@ -8,11 +8,12 @@ export default function AdminLayout() {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [isSidebarCollapsed, setIsSidebarCollapsed] = useState(false);
   
+  const navigate = useNavigate();
   const handleLogout = () => {
     showConfirm("Bạn có chắc chắn muốn đăng xuất?", async () => {
       logoutUser();
       showToast("Đã đăng xuất khỏi hệ thống", "success");
-      window.location.href = "/dang-nhap";
+      navigate("/dang-nhap");
     });
   };
 

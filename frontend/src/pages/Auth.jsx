@@ -23,7 +23,11 @@ export default function Auth() {
       if (res.ok) {
         showToast("Đăng nhập thành công!", "success");
         loginUser(data.user, data.access_token);
-        navigate("/");
+        if (data.user?.vai_tro === "Admin") {
+          navigate("/admin");
+        } else {
+          navigate("/");
+        }
       } else {
         showToast(data.message || "Đăng nhập thất bại", "error");
       }
@@ -49,7 +53,11 @@ export default function Auth() {
       if (res.ok) {
         showToast("Đăng ký thành công!", "success");
         loginUser(data.user, data.access_token);
-        navigate("/");
+        if (data.user?.vai_tro === "Admin") {
+          navigate("/admin");
+        } else {
+          navigate("/");
+        }
       } else {
         showToast(data.message || "Vui lòng kiểm tra lại thông tin", "error");
       }

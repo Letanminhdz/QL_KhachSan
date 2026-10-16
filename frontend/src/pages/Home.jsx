@@ -93,9 +93,9 @@ export default function Home() {
 
   const [activeSlide, setActiveSlide] = useState(0);
   const slides = [
-    "http://localhost:8000/storage/slides/slide1.jpg",
-    "http://localhost:8000/storage/slides/slide2.jpg",
-    "http://localhost:8000/storage/slides/slide3.jpg",
+    "./storage/slides/slide1.jpg",
+    "./storage/slides/slide2.jpg",
+    "./storage/slides/slide3.jpg",
   ];
 
   useEffect(() => {
@@ -111,7 +111,11 @@ export default function Home() {
         {/* Hero Panoramic */}
         <div className="relative flex-1 min-h-[520px] flex items-center overflow-hidden text-white rounded-3xl mx-4 mt-4 mb-6 z-0">
           {/* Lớp ảnh nền */}
-          <div className="absolute -top-[5%] -bottom-[5%] -left-[8%] -right-[8%] bg-[url('http://localhost:8000/storage/banners/home_hero.jpg')] bg-center bg-cover scale-105 z-0"></div>
+          <img
+            src="./storage/banners/home_hero.jpg"
+            alt="Royal Hotel Hero"
+            className="absolute inset-0 w-full h-full object-cover scale-105 z-0"
+          />
           {/* Hiệu ứng tối 2 bên (vignette) */}
           <div className="absolute inset-0 bg-gradient-to-r from-[#050a14d9] via-[#050a1473] to-[#050a14d9] z-10"></div>
           {/* Overlay gradient trên-dưới */}

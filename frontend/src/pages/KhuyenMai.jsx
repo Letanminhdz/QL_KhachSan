@@ -7,7 +7,7 @@ export default function KhuyenMai() {
       id: 1,
       title: "Ưu Đãi Nghỉ Dưỡng Mùa Hè 2026",
       description: "Tận hưởng kỳ nghỉ trọn vẹn với gói ưu đãi giảm ngay 25% cho tất cả các hạng phòng khi đặt trước 30 ngày.",
-      image: "http://localhost:8000/storage/promotions/promo1.jpg",
+      image: "./storage/promotions/promo1.jpg",
       code: "SUMMER26",
       date: "Áp dụng đến 30/08/2026",
     },
@@ -15,7 +15,7 @@ export default function KhuyenMai() {
       id: 2,
       title: "Trăng Mật Lãng Mạn",
       description: "Gói dịch vụ cao cấp bao gồm bữa tối lãng mạn bên bờ biển, trang trí phòng miễn phí và dịch vụ đón sân bay 2 chiều.",
-      image: "http://localhost:8000/storage/promotions/promo2.jpg",
+      image: "./storage/promotions/promo2.jpg",
       code: "HONEYMOON",
       date: "Áp dụng quanh năm",
     },
@@ -23,7 +23,7 @@ export default function KhuyenMai() {
       id: 3,
       title: "Ưu Đãi Dành Riêng Khách Hàng Thân Thiết",
       description: "Giảm trực tiếp 15% khi xuất trình thẻ thành viên. Tích lũy điểm nhân đôi cho các dịch vụ Nhà hàng và Spa.",
-      image: "http://localhost:8000/storage/promotions/promo3.jpg",
+      image: "./storage/promotions/promo3.jpg",
       code: "ROYALVIP",
       date: "Không thời hạn",
     }
@@ -34,7 +34,7 @@ export default function KhuyenMai() {
       {/* Banner */}
       <div className="relative bg-slate-900 h-64 flex items-center justify-center overflow-hidden">
         <div className="absolute inset-0 opacity-40">
-          <img src="http://localhost:8000/storage/banners/promotion_hero.jpg" alt="Banner" className="w-full h-full object-cover" />
+          <img src="./storage/banners/promotion_hero.jpg" alt="Banner" className="w-full h-full object-cover" />
         </div>
         <div className="relative z-10 text-center px-4">
           <h1 className="text-4xl md:text-5xl font-extrabold text-white mb-4 tracking-tight drop-shadow-lg">Khuyến Mãi & Ưu Đãi</h1>

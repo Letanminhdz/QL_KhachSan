@@ -24,8 +24,8 @@ DROP TABLE IF EXISTS `cache`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8mb4 */;
 CREATE TABLE `cache` (
-  `key` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
-  `value` mediumtext COLLATE utf8mb4_unicode_ci NOT NULL,
+  `key` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
+  `value` mediumtext CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
   `expiration` bigint NOT NULL,
   PRIMARY KEY (`key`),
   KEY `cache_expiration_index` (`expiration`)
@@ -52,8 +52,8 @@ DROP TABLE IF EXISTS `cache_locks`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8mb4 */;
 CREATE TABLE `cache_locks` (
-  `key` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
-  `owner` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `key` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
+  `owner` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
   `expiration` bigint NOT NULL,
   PRIMARY KEY (`key`),
   KEY `cache_locks_expiration_index` (`expiration`)
@@ -82,18 +82,18 @@ DROP TABLE IF EXISTS `dat_phong`;
 CREATE TABLE `dat_phong` (
   `id` bigint unsigned NOT NULL AUTO_INCREMENT,
   `id_tai_khoan` bigint unsigned DEFAULT NULL,
-  `ten_khach_hang` varchar(100) COLLATE utf8mb4_unicode_ci NOT NULL,
-  `sdt_khach_hang` varchar(15) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `ten_khach_hang` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
+  `sdt_khach_hang` varchar(15) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
   `ngay_nhan_phong` datetime NOT NULL,
   `ngay_tra_phong` datetime NOT NULL,
   `id_loai_phong` bigint unsigned NOT NULL,
-  `ten_loai_phong_khi_dat` varchar(100) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `ten_loai_phong_khi_dat` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
   `so_luong_phong` int NOT NULL,
   `gia_phong_khi_dat` decimal(15,2) NOT NULL,
   `tong_tien` decimal(15,2) NOT NULL DEFAULT '0.00',
   `so_tien_da_thanh_toan` decimal(15,2) NOT NULL DEFAULT '0.00',
-  `trang_thai` varchar(50) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT 'Moi_Dat',
-  `trang_thai_thanh_toan` varchar(50) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT 'Chưa thanh toán',
+  `trang_thai` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT 'Moi_Dat',
+  `trang_thai_thanh_toan` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT 'Chưa thanh toán',
   `created_at` timestamp NULL DEFAULT NULL,
   `updated_at` timestamp NULL DEFAULT NULL,
   PRIMARY KEY (`id`),
@@ -101,7 +101,7 @@ CREATE TABLE `dat_phong` (
   KEY `dat_phong_id_loai_phong_foreign` (`id_loai_phong`),
   CONSTRAINT `dat_phong_id_loai_phong_foreign` FOREIGN KEY (`id_loai_phong`) REFERENCES `loai_phong` (`id`) ON DELETE RESTRICT,
   CONSTRAINT `dat_phong_id_tai_khoan_foreign` FOREIGN KEY (`id_tai_khoan`) REFERENCES `tai_khoan` (`id`) ON DELETE SET NULL
-) ENGINE=InnoDB AUTO_INCREMENT=16 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=18 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -113,8 +113,8 @@ LOCK TABLES `dat_phong` WRITE;
 /*!40000 ALTER TABLE `dat_phong` DISABLE KEYS */;
 INSERT INTO `dat_phong` VALUES
 (13,1,'Administrator','0987654321','2026-09-25 17:52:51','2026-09-25 17:55:27',1,'Standard',1,500000.00,1000000.00,1000000.00,'Da_Tra_Phong','Đã thanh toán','2026-09-25 17:52:26','2026-09-25 17:55:27'),
-(14,1,'Administrator','0987654321','2026-09-25 18:01:35','2026-09-26 20:00:00',3,'Deluxe',1,1200000.00,2400000.00,600000.00,'Da_Nhan_Phong','Thanh toán 1 phần','2026-09-25 18:00:49','2026-09-25 18:01:35'),
-(15,1,'Administrator','0987654321','2026-09-25 14:00:00','2026-09-26 12:00:00',3,'Deluxe',1,1200000.00,1200000.00,0.00,'Cho_Xac_Nhan','Chưa thanh toán','2026-09-25 18:22:46','2026-09-25 18:22:46');
+(14,1,'Administrator','0987654321','2026-09-25 18:01:35','2026-10-11 13:00:23',3,'Deluxe',1,1200000.00,19560000.00,19560000.00,'Da_Tra_Phong','Đã thanh toán','2026-09-25 18:00:49','2026-10-11 13:00:23'),
+(15,1,'Administrator','0987654321','2026-10-02 10:48:07','2026-10-11 13:00:17',3,'Deluxe',1,1200000.00,11520000.00,11520000.00,'Da_Tra_Phong','Đã thanh toán','2026-09-25 18:22:46','2026-10-11 13:00:17');
 /*!40000 ALTER TABLE `dat_phong` ENABLE KEYS */;
 UNLOCK TABLES;
 COMMIT;
@@ -129,12 +129,12 @@ DROP TABLE IF EXISTS `dich_vu`;
 /*!40101 SET character_set_client = utf8mb4 */;
 CREATE TABLE `dich_vu` (
   `id` bigint unsigned NOT NULL AUTO_INCREMENT,
-  `ten_dich_vu` varchar(100) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `ten_dich_vu` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
   `gia` decimal(15,2) NOT NULL,
   `dang_hoat_dong` tinyint(1) NOT NULL DEFAULT '1',
   `created_at` timestamp NULL DEFAULT NULL,
   `updated_at` timestamp NULL DEFAULT NULL,
-  `hinh_anh` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `hinh_anh` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT NULL,
   `id_loai_dich_vu` bigint unsigned DEFAULT NULL,
   PRIMARY KEY (`id`),
   KEY `dich_vu_id_loai_dich_vu_foreign` (`id_loai_dich_vu`),
@@ -168,11 +168,11 @@ DROP TABLE IF EXISTS `failed_jobs`;
 /*!40101 SET character_set_client = utf8mb4 */;
 CREATE TABLE `failed_jobs` (
   `id` bigint unsigned NOT NULL AUTO_INCREMENT,
-  `uuid` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
-  `connection` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
-  `queue` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
-  `payload` longtext COLLATE utf8mb4_unicode_ci NOT NULL,
-  `exception` longtext COLLATE utf8mb4_unicode_ci NOT NULL,
+  `uuid` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
+  `connection` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
+  `queue` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
+  `payload` longtext CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
+  `exception` longtext CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
   `failed_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`),
   UNIQUE KEY `failed_jobs_uuid_unique` (`uuid`),
@@ -200,13 +200,13 @@ DROP TABLE IF EXISTS `job_batches`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8mb4 */;
 CREATE TABLE `job_batches` (
-  `id` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
-  `name` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `id` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
+  `name` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
   `total_jobs` int NOT NULL,
   `pending_jobs` int NOT NULL,
   `failed_jobs` int NOT NULL,
-  `failed_job_ids` longtext COLLATE utf8mb4_unicode_ci NOT NULL,
-  `options` mediumtext COLLATE utf8mb4_unicode_ci,
+  `failed_job_ids` longtext CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
+  `options` mediumtext CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci,
   `cancelled_at` int DEFAULT NULL,
   `created_at` int NOT NULL,
   `finished_at` int DEFAULT NULL,
@@ -235,8 +235,8 @@ DROP TABLE IF EXISTS `jobs`;
 /*!40101 SET character_set_client = utf8mb4 */;
 CREATE TABLE `jobs` (
   `id` bigint unsigned NOT NULL AUTO_INCREMENT,
-  `queue` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
-  `payload` longtext COLLATE utf8mb4_unicode_ci NOT NULL,
+  `queue` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
+  `payload` longtext CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
   `attempts` smallint unsigned NOT NULL,
   `reserved_at` int unsigned DEFAULT NULL,
   `available_at` int unsigned NOT NULL,
@@ -267,7 +267,7 @@ DROP TABLE IF EXISTS `loai_dich_vu`;
 /*!40101 SET character_set_client = utf8mb4 */;
 CREATE TABLE `loai_dich_vu` (
   `id` bigint unsigned NOT NULL AUTO_INCREMENT,
-  `ten_loai` varchar(100) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `ten_loai` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
   `created_at` timestamp NULL DEFAULT NULL,
   `updated_at` timestamp NULL DEFAULT NULL,
   PRIMARY KEY (`id`)
@@ -299,13 +299,13 @@ DROP TABLE IF EXISTS `loai_phong`;
 /*!40101 SET character_set_client = utf8mb4 */;
 CREATE TABLE `loai_phong` (
   `id` bigint unsigned NOT NULL AUTO_INCREMENT,
-  `ten_loai` varchar(100) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `ten_loai` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
   `suc_chua` int NOT NULL,
   `gia_co_ban` decimal(15,2) NOT NULL,
   `created_at` timestamp NULL DEFAULT NULL,
   `updated_at` timestamp NULL DEFAULT NULL,
-  `hinh_anh` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
-  `mo_ta` text COLLATE utf8mb4_unicode_ci,
+  `hinh_anh` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `mo_ta` text CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci,
   `tien_ich` json DEFAULT NULL,
   `hinh_anh_phu` json DEFAULT NULL,
   PRIMARY KEY (`id`)
@@ -320,13 +320,10 @@ SET @OLD_AUTOCOMMIT=@@AUTOCOMMIT, @@AUTOCOMMIT=0;
 LOCK TABLES `loai_phong` WRITE;
 /*!40000 ALTER TABLE `loai_phong` DISABLE KEYS */;
 INSERT INTO `loai_phong` VALUES
-(1,'Standard',2,500000.00,'2026-09-18 08:22:42','2026-09-18 08:22:42',NULL,NULL,NULL,NULL),
-(2,'Superior',2,800000.00,'2026-09-18 08:22:42','2026-09-18 08:22:42',NULL,NULL,NULL,NULL),
-(3,'Deluxe',3,1200000.00,'2026-09-18 08:22:42','2026-09-18 08:22:42',NULL,NULL,NULL,NULL),
-(4,'Suite',4,2500000.00,'2026-09-18 08:22:42','2026-09-18 08:22:42',NULL,NULL,NULL,NULL),
-(5,'Phòng Standard',2,500000.00,'2026-09-23 13:52:22','2026-09-23 14:06:22','storage/loai_phong/5/anh_chinh.jpg','Phòng tiêu chuẩn với đầy đủ tiện nghi cơ bản, phù hợp cho khách lẻ hoặc cặp đôi.','[\"Wifi miễn phí\", \"Điều hòa\", \"Tivi\", \"Phòng tắm riêng\"]','[\"storage/loai_phong/5/anh_phu_6ab3dcdeedf9e.jpg\", \"storage/loai_phong/5/anh_phu_6ab3dcdeedfb5.jpg\"]'),
-(6,'Phòng Deluxe',3,800000.00,'2026-09-23 13:52:23','2026-09-23 14:06:22','storage/loai_phong/6/anh_chinh.jpg','Không gian rộng rãi, view thành phố tuyệt đẹp cùng bồn tắm nằm thư giãn.','[\"Wifi tốc độ cao\", \"Điều hòa 2 chiều\", \"Smart TV 55 inch\", \"Bồn tắm\", \"Minibar miễn phí\"]','[\"storage/loai_phong/6/anh_phu_6ab3dcdeeec65.jpg\"]'),
-(7,'Phòng Suite VIP',4,1500000.00,'2026-09-23 13:52:25','2026-09-23 14:06:22','storage/loai_phong/7/anh_chinh.jpg','Trải nghiệm thượng lưu với phòng khách riêng, ban công lớn và dịch vụ đặc quyền.','[\"Wifi VIP\", \"Phòng khách riêng\", \"Ban công view biển\", \"Bồn tắm sục Jacuzzi\", \"Đưa đón sân bay\", \"Ăn sáng tận phòng\"]','[\"storage/loai_phong/7/anh_phu_6ab3dcdeef647.jpg\", \"storage/loai_phong/7/anh_phu_6ab3dcdeef66c.jpg\"]');
+(1,'Standard',2,500000.00,'2026-09-18 08:22:42','2026-10-11 12:21:24','storage/defaults/room_600.jpg',NULL,NULL,NULL),
+(2,'Superior',2,800000.00,'2026-09-18 08:22:42','2026-10-11 12:21:24','storage/slides/slide1.jpg',NULL,NULL,NULL),
+(3,'Deluxe',3,1200000.00,'2026-09-18 08:22:42','2026-10-11 12:21:24','storage/slides/slide2.jpg',NULL,NULL,NULL),
+(4,'Suite',4,2500000.00,'2026-09-18 08:22:42','2026-10-11 12:21:24','storage/slides/slide3.jpg',NULL,NULL,NULL);
 /*!40000 ALTER TABLE `loai_phong` ENABLE KEYS */;
 UNLOCK TABLES;
 COMMIT;
@@ -341,7 +338,7 @@ DROP TABLE IF EXISTS `migrations`;
 /*!40101 SET character_set_client = utf8mb4 */;
 CREATE TABLE `migrations` (
   `id` int unsigned NOT NULL AUTO_INCREMENT,
-  `migration` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `migration` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
   `batch` int NOT NULL,
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=14 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
@@ -381,8 +378,8 @@ DROP TABLE IF EXISTS `password_reset_tokens`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8mb4 */;
 CREATE TABLE `password_reset_tokens` (
-  `email` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
-  `token` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `email` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
+  `token` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
   `created_at` timestamp NULL DEFAULT NULL,
   PRIMARY KEY (`email`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
@@ -409,11 +406,11 @@ DROP TABLE IF EXISTS `personal_access_tokens`;
 /*!40101 SET character_set_client = utf8mb4 */;
 CREATE TABLE `personal_access_tokens` (
   `id` bigint unsigned NOT NULL AUTO_INCREMENT,
-  `tokenable_type` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `tokenable_type` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
   `tokenable_id` bigint unsigned NOT NULL,
-  `name` text COLLATE utf8mb4_unicode_ci NOT NULL,
-  `token` varchar(64) COLLATE utf8mb4_unicode_ci NOT NULL,
-  `abilities` text COLLATE utf8mb4_unicode_ci,
+  `name` text CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
+  `token` varchar(64) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
+  `abilities` text CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci,
   `last_used_at` timestamp NULL DEFAULT NULL,
   `expires_at` timestamp NULL DEFAULT NULL,
   `created_at` timestamp NULL DEFAULT NULL,
@@ -422,7 +419,7 @@ CREATE TABLE `personal_access_tokens` (
   UNIQUE KEY `personal_access_tokens_token_unique` (`token`),
   KEY `personal_access_tokens_tokenable_type_tokenable_id_index` (`tokenable_type`,`tokenable_id`),
   KEY `personal_access_tokens_expires_at_index` (`expires_at`)
-) ENGINE=InnoDB AUTO_INCREMENT=7 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=8 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -434,11 +431,12 @@ LOCK TABLES `personal_access_tokens` WRITE;
 /*!40000 ALTER TABLE `personal_access_tokens` DISABLE KEYS */;
 INSERT INTO `personal_access_tokens` VALUES
 (1,'App\\Models\\User',2,'auth_token','116411350cbd3543018ae5c52ebe69fef3add5245e5b39f9255fab824f779993','[\"*\"]',NULL,NULL,'2026-09-18 08:23:43','2026-09-18 08:23:43'),
-(2,'App\\Models\\User',1,'auth_token','5af5acb6419949e5b30a8ef3e9fcba241c439d20a3c034d9f2bde1ec003542eb','[\"*\"]','2026-09-23 14:43:15',NULL,'2026-09-18 08:29:48','2026-09-23 14:43:15'),
-(3,'App\\Models\\User',1,'auth_token','e24907c6c6206c70e8dd298880454f1d9ed540b20df80aad808496cd331b7eaf','[\"*\"]','2026-09-25 20:08:44',NULL,'2026-09-23 00:57:06','2026-09-25 20:08:44'),
+(2,'App\\Models\\User',1,'auth_token','5af5acb6419949e5b30a8ef3e9fcba241c439d20a3c034d9f2bde1ec003542eb','[\"*\"]','2026-10-02 10:55:13',NULL,'2026-09-18 08:29:48','2026-10-02 10:55:13'),
+(3,'App\\Models\\User',1,'auth_token','e24907c6c6206c70e8dd298880454f1d9ed540b20df80aad808496cd331b7eaf','[\"*\"]','2026-10-11 13:07:14',NULL,'2026-09-23 00:57:06','2026-10-11 13:07:14'),
 (4,'App\\Models\\User',1,'auth_token','4aba01074045ce3d6251d17c5146adea676611cd5b87c9623071f53709932964','[\"*\"]',NULL,NULL,'2026-09-23 01:49:03','2026-09-23 01:49:03'),
 (5,'App\\Models\\User',1,'auth_token','2495fdf1a476d4ffcc2b24fc75e3aa39ebf3f64f3ac791ef0041914549f4621d','[\"*\"]','2026-09-23 01:49:51',NULL,'2026-09-23 01:49:18','2026-09-23 01:49:51'),
-(6,'App\\Models\\User',1,'auth_token','9b4b0cc0fb5ee483bf75caf244e6d2410efa02657bfd2d69a3436d1dd055a7e2','[\"*\"]','2026-09-23 01:50:19',NULL,'2026-09-23 01:50:18','2026-09-23 01:50:19');
+(6,'App\\Models\\User',1,'auth_token','9b4b0cc0fb5ee483bf75caf244e6d2410efa02657bfd2d69a3436d1dd055a7e2','[\"*\"]','2026-09-23 01:50:19',NULL,'2026-09-23 01:50:18','2026-09-23 01:50:19'),
+(7,'App\\Models\\User',1,'test_token','d18612045c948dea01216713a681bc0228d2a41f6f47da04a31cbadef810472b','[\"*\"]',NULL,NULL,'2026-10-11 12:43:39','2026-10-11 12:43:39');
 /*!40000 ALTER TABLE `personal_access_tokens` ENABLE KEYS */;
 UNLOCK TABLES;
 COMMIT;
@@ -463,7 +461,7 @@ CREATE TABLE `phan_bo_phong` (
   KEY `phan_bo_phong_id_phong_foreign` (`id_phong`),
   CONSTRAINT `phan_bo_phong_id_dat_phong_foreign` FOREIGN KEY (`id_dat_phong`) REFERENCES `dat_phong` (`id`) ON DELETE CASCADE,
   CONSTRAINT `phan_bo_phong_id_phong_foreign` FOREIGN KEY (`id_phong`) REFERENCES `phong` (`id`) ON DELETE RESTRICT
-) ENGINE=InnoDB AUTO_INCREMENT=16 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=18 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -491,10 +489,10 @@ DROP TABLE IF EXISTS `phong`;
 /*!40101 SET character_set_client = utf8mb4 */;
 CREATE TABLE `phong` (
   `id` bigint unsigned NOT NULL AUTO_INCREMENT,
-  `so_phong` varchar(20) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `so_phong` varchar(20) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
   `id_loai_phong` bigint unsigned NOT NULL,
   `id_tang` bigint unsigned NOT NULL,
-  `trang_thai` varchar(50) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT 'Trong',
+  `trang_thai` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT 'Trong',
   `created_at` timestamp NULL DEFAULT NULL,
   `updated_at` timestamp NULL DEFAULT NULL,
   PRIMARY KEY (`id`),
@@ -516,9 +514,9 @@ INSERT INTO `phong` VALUES
 (1,'101',1,1,'Trong','2026-09-18 08:22:42','2026-09-25 17:52:07'),
 (2,'102',1,1,'Trong','2026-09-18 08:22:42','2026-09-25 17:52:04'),
 (3,'103',2,1,'Trong','2026-09-18 08:22:42','2026-09-24 05:28:34'),
-(4,'201',3,2,'Dang_Thue','2026-09-18 08:22:42','2026-09-24 05:28:31'),
+(4,'201',3,2,'Trong','2026-09-18 08:22:42','2026-09-24 05:28:31'),
 (5,'202',3,2,'Trong','2026-09-18 08:22:42','2026-09-24 05:28:28'),
-(6,'203',4,2,'Trong','2026-09-18 08:22:42','2026-09-24 05:28:23');
+(6,'203',4,2,'Trong','2026-09-18 08:22:42','2026-10-05 14:38:18');
 /*!40000 ALTER TABLE `phong` ENABLE KEYS */;
 UNLOCK TABLES;
 COMMIT;
@@ -532,11 +530,11 @@ DROP TABLE IF EXISTS `sessions`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8mb4 */;
 CREATE TABLE `sessions` (
-  `id` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `id` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
   `id_tai_khoan` bigint unsigned DEFAULT NULL,
-  `ip_address` varchar(45) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
-  `user_agent` text COLLATE utf8mb4_unicode_ci,
-  `payload` longtext COLLATE utf8mb4_unicode_ci NOT NULL,
+  `ip_address` varchar(45) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `user_agent` text CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci,
+  `payload` longtext CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
   `last_activity` int NOT NULL,
   PRIMARY KEY (`id`),
   KEY `sessions_id_tai_khoan_index` (`id_tai_khoan`),
@@ -570,7 +568,7 @@ CREATE TABLE `su_dung_dich_vu` (
   `id_dich_vu` bigint unsigned NOT NULL,
   `so_luong` int NOT NULL,
   `tong_tien` decimal(15,2) NOT NULL,
-  `trang_thai` varchar(50) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT 'Cho_Phuc_Vu',
+  `trang_thai` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT 'Cho_Phuc_Vu',
   `thoi_gian_su_dung` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `created_at` timestamp NULL DEFAULT NULL,
   `updated_at` timestamp NULL DEFAULT NULL,
@@ -605,14 +603,14 @@ DROP TABLE IF EXISTS `tai_khoan`;
 /*!40101 SET character_set_client = utf8mb4 */;
 CREATE TABLE `tai_khoan` (
   `id` bigint unsigned NOT NULL AUTO_INCREMENT,
-  `ho_ten` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
-  `email` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `ho_ten` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
+  `email` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
   `email_verified_at` timestamp NULL DEFAULT NULL,
-  `mat_khau` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
-  `so_dien_thoai` varchar(15) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
-  `vai_tro` varchar(20) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT 'Khach_Hang',
+  `mat_khau` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
+  `so_dien_thoai` varchar(15) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `vai_tro` varchar(20) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT 'Khach_Hang',
   `dang_hoat_dong` tinyint(1) NOT NULL DEFAULT '1',
-  `remember_token` varchar(100) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `remember_token` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT NULL,
   `created_at` timestamp NULL DEFAULT NULL,
   `updated_at` timestamp NULL DEFAULT NULL,
   PRIMARY KEY (`id`),
@@ -644,7 +642,7 @@ DROP TABLE IF EXISTS `tang`;
 /*!40101 SET character_set_client = utf8mb4 */;
 CREATE TABLE `tang` (
   `id` bigint unsigned NOT NULL AUTO_INCREMENT,
-  `ten_tang` varchar(50) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `ten_tang` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
   `thu_tu` int NOT NULL DEFAULT '0',
   `created_at` timestamp NULL DEFAULT NULL,
   `updated_at` timestamp NULL DEFAULT NULL,
@@ -678,7 +676,7 @@ CREATE TABLE `thanh_toan` (
   `id` bigint unsigned NOT NULL AUTO_INCREMENT,
   `id_dat_phong` bigint unsigned NOT NULL,
   `so_tien_thanh_toan` decimal(15,2) NOT NULL,
-  `phuong_thuc_thanh_toan` varchar(50) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `phuong_thuc_thanh_toan` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
   `thoi_gian_thanh_toan` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `created_at` timestamp NULL DEFAULT NULL,
   `updated_at` timestamp NULL DEFAULT NULL,
@@ -713,4 +711,4 @@ SET AUTOCOMMIT=@OLD_AUTOCOMMIT;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*M!100616 SET NOTE_VERBOSITY=@OLD_NOTE_VERBOSITY */;
 
--- Dump completed on 2026-09-25 20:19:44
+-- Dump completed on 2026-10-13  8:49:54
