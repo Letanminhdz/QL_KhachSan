@@ -1,0 +1,35 @@
+[
+    {
+        "id": "Cho_Xac_Nhan",
+        "label": "Chờ xác nhận",
+        "color": "#f59e0b",
+        "textColor": "#000000"
+    },
+    {
+        "id": "Da_Xac_Nhan",
+        "label": "Đã xác nhận đơn đặt phòng",
+        "color": "#cccccc",
+        "textColor": "#000000",
+        "set_room_status": null
+    },
+    {
+        "id": "Da_Nhan_Phong",
+        "label": "Đã nhận Phòng",
+        "color": "#8b5cf6",
+        "textColor": "#ffffff",
+        "set_room_status": "in"
+    },
+    {
+        "id": "Da_Tra_Phong",
+        "label": "Đã trả phòng",
+        "color": "#10b981",
+        "textColor": "#000000",
+        "set_room_status": "out"
+    },
+    {
+        "id": "Da_Huy",
+        "label": "Đã hủy",
+        "color": "#ef4444",
+        "textColor": "#ffffff"
+    }
+]
